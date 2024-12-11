@@ -1,7 +1,7 @@
 #include "SensorAccelGyro.h"
 
 
-SensorAccelGyro::SensorAccelGyro(uint8_t i2c_addr = LSM6DS_I2CADDR_DEFAULT, uint8_t i2c_wire = I2C_WIRE0)
+SensorAccelGyro::SensorAccelGyro(uint8_t i2c_addr, uint8_t i2c_wire)
 : Sensor(i2c_addr, i2c_wire)
 {}
 
@@ -13,7 +13,7 @@ SensorAccelGyro::~SensorAccelGyro(){}
 
 uint8_t SensorAccelGyro::begin()
 {
-    if(sensor_mode = SENSOR_MODE_I2C)
+    if(sensor_mode == SENSOR_MODE_I2C)
     {
         status = lsm6dsox.begin_I2C(i2c_addr, &I2C_WIRE(i2c_wire), 0);
     } else

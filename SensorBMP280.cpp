@@ -1,24 +1,24 @@
 #include "SensorBMP280.h"
 
-SensorBMP280::SensorBMP280(uint8_t i2c_addr = BMP280_ADDRESS, uint8_t i2c_wire = I2C_WIRE0, float ground_alt = 0.0f)
+SensorBMP280::SensorBMP280(uint8_t i2c_addr, uint8_t i2c_wire, float ground_alt)
 : Sensor(i2c_addr, i2c_wire)
 , ground_alt(ground_alt)
 {
     bmp = Adafruit_BMP280(&I2C_WIRE(i2c_wire));
 }
 
-SensorBMP280::SensorBMP280(uint8_t cs, uint8_t miso, uint8_t mosi, uint8_t sck, float ground_alt = 0.0f)
+SensorBMP280::SensorBMP280(uint8_t cs, uint8_t miso, uint8_t mosi, uint8_t sck, float ground_alt)
 : Sensor(cs, miso, mosi, sck)
 , ground_alt(ground_alt)
 {
-    bmp = Adafruit_BMP280(cs, mosi, miso, sck)
+    bmp = Adafruit_BMP280(cs, mosi, miso, sck);
 }
 
 SensorBMP280::~SensorBMP280(){}
 
 uint8_t SensorBMP280::begin()
 {
-    if(sensor_mode = SENSOR_MODE_I2C)
+    if(sensor_mode == SENSOR_MODE_I2C)
     {
         status = bmp.begin(i2c_addr);
     } else

@@ -1,4 +1,4 @@
-#include "SensorTemperature.h"
+#include "SensorTemp.h"
 
 SensorTemperature::SensorTemperature(uint8_t i2c_addr, uint8_t i2c_wire)
 : Sensor(i2c_addr, i2c_wire)

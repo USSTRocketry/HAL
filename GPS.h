@@ -19,7 +19,7 @@ public:
     ~GPS();
 
     void begin();
-    void configure(uint32_t update_rate_ms = 1000, uint8_t output_mode = PMTK_SET_NMEA_OUTPUT_RMCONLY);
+    void configure(uint32_t update_rate_ms = 1000, const char* output_mode = PMTK_SET_NMEA_OUTPUT_RMCONLY);
     GPSData* read();
     bool hasFix();
     void sendCommand(const char* command);

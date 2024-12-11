@@ -24,10 +24,10 @@ uint8_t SensorMagnetometer::begin()
     if (status)
     {
         // Configure LIS3MDL with default settings or custom settings.
-        lis3mdl.setPerformanceMode(Adafruit_LIS3MDL::LIS3MDL_MEDIUMMODE);
-        lis3mdl.setOperationMode(Adafruit_LIS3MDL::LIS3MDL_CONTINUOUSMODE);
-        lis3mdl.setDataRate(Adafruit_LIS3MDL::LIS3MDL_DATARATE_155_HZ);
-        lis3mdl.setRange(Adafruit_LIS3MDL::LIS3MDL_RANGE_4_GAUSS);
+        lis3mdl.setPerformanceMode(LIS3MDL_MEDIUMMODE);
+        lis3mdl.setOperationMode(LIS3MDL_CONTINUOUSMODE);
+        lis3mdl.setDataRate(LIS3MDL_DATARATE_155_HZ);
+        lis3mdl.setRange(LIS3MDL_RANGE_4_GAUSS);
     }
 
     return status;

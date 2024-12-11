@@ -21,6 +21,6 @@ public:
     SensorMagnetometer(uint8_t i2c_addr = LIS3MDL_I2CADDR_DEFAULT, uint8_t i2c_wire = I2C_WIRE0);
     SensorMagnetometer(uint8_t cs, uint8_t miso, uint8_t mosi, uint8_t sck);
     uint8_t begin();
-    MagnetometerData read();
+    MagnetometerData* read();
     ~SensorMagnetometer();
 };

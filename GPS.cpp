@@ -16,7 +16,7 @@ void GPS::begin()
 }
 
 // Configure GPS settings
-void GPS::configure(uint32_t update_rate_ms, uint8_t output_mode)
+void GPS::configure(uint32_t update_rate_ms, const char* output_mode)
 {
     // Set NMEA output format (e.g., RMC only, RMC+GGA, etc.)
     gps.sendCommand(output_mode);
@@ -32,7 +32,7 @@ void GPS::configure(uint32_t update_rate_ms, uint8_t output_mode)
     }
 }
 
-GPS::GPSData* GPS::read()
+GPSData* GPS::read()
 {
     if (gps.newNMEAreceived()) {
         if (!gps.parse(gps.lastNMEA())) {

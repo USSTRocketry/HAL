@@ -1,24 +1,24 @@
 #include "RYLR998Radio.h"
 
-RYLR998Radio::RYLR998Radio(uint8_t rxPin, uint8_t txPin, uint32_t baudRate)
-    : rylr998(rxPin, txPin), baudRate(baudRate) {}
+RYLR998Radio::RYLR998Radio(uint8_t serialPort, uint32_t baudRate)
+: rylr998(RYLR998_SERIAL(serialPort)), baudRate(baudRate) {}
 
 bool RYLR998Radio::begin() {
+    // Begin the chosen serial port with the configured baud rate
     rylr998.begin(baudRate);
-    rylr998.print("AT+ADDRESS=0\r\n"); // Example: Set default address
-    return true;
+    return rylr998;
 }
 
 bool RYLR998Radio::send(const uint8_t* data, size_t length) {
-    rylr998.print("AT+SEND=");
-    rylr998.print(length);
-    rylr998.print(",");
-    rylr998.write(data, length);
-    rylr998.print("\r\n");
+    // Send data using the selected hardware serial port
+    for (size_t i = 0; i < length; ++i) {
+        rylr998.write(data[i]);
+    }
     return true;
 }
 
 bool RYLR998Radio::receive(uint8_t* buffer, size_t maxLength, size_t& receivedLength) {
+    // Receive data using the selected hardware serial port
     receivedLength = 0;
     while (rylr998.available() && receivedLength < maxLength) {
         buffer[receivedLength++] = rylr998.read();
@@ -29,7 +29,7 @@ bool RYLR998Radio::receive(uint8_t* buffer, size_t maxLength, size_t& receivedLe
 void RYLR998Radio::setFrequency(float frequency) {
     // Configure frequency via AT command
     rylr998.print("AT+FREQ=");
-    rylr998.print(static_cast<int>(frequency)); // Convert to integer for command
+    rylr998.print(static_cast<int>(frequency));
     rylr998.print("\r\n");
 }
 
