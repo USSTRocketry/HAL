@@ -1,3 +1,5 @@
+#pragma once
+
 #include <Adafruit_LSM6DSOX.h>
 
 #include "types.h"

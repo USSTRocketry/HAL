@@ -4,6 +4,7 @@
 #include <HardwareSerial.h>
 
 #include "types.h"
+#include "PINS.h"
 
 
 class GPS
@@ -15,7 +16,7 @@ public:
     GPSData data;
 
 public:
-    GPS(HardwareSerial* serial, uint32_t baud_rate = 9600);
+    GPS(uint8_t serial = GPS_HW_SERIAL, uint32_t baud_rate = 9600);
     ~GPS();
 
     void begin();

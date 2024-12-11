@@ -1,7 +1,7 @@
 #include "RYLR998Radio.h"
 
 RYLR998Radio::RYLR998Radio(uint8_t serialPort, uint32_t baudRate)
-: rylr998(RYLR998_SERIAL(serialPort)), baudRate(baudRate) {}
+: rylr998(HW_SERIAL(serialPort)), baudRate(baudRate) {}
 
 bool RYLR998Radio::begin() {
     // Begin the chosen serial port with the configured baud rate

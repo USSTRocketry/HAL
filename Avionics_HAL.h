@@ -1,0 +1,9 @@
+#pragma once
+
+#include "GPS.h"
+#include "GPS.h"
+#include "RFM95Radio.h"
+#include "SensorAccelGyro.h"
+#include "SensorBMP280.h"
+#include "SensorMagnetometer.h"
+#include "SensorTemp.h"

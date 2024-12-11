@@ -1,3 +1,5 @@
+#pragma once
+
 #include <cstdint>
 
 #define I2C_WIRE0   0 // default (SDA = 18, SCL = 19)
