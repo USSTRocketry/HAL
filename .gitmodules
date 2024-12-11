@@ -1,0 +1,24 @@
+[submodule "libraries/Adafruit_LSM6DS"]
+	path = libraries/Adafruit_LSM6DS
+	url = https://github.com/adafruit/Adafruit_LSM6DS.git
+[submodule "libraries/Adafruit_BusIO"]
+	path = libraries/Adafruit_BusIO
+	url = https://github.com/adafruit/Adafruit_BusIO.git
+[submodule "libraries/Adafruit_Sensor"]
+	path = libraries/Adafruit_Sensor
+	url = https://github.com/adafruit/Adafruit_Sensor.git
+[submodule "libraries/Adafruit_LIS3MDL"]
+	path = libraries/Adafruit_LIS3MDL
+	url = https://github.com/adafruit/Adafruit_LIS3MDL.git
+[submodule "libraries/Adafruit_BMP280"]
+	path = libraries/Adafruit_BMP280
+	url = https://github.com/adafruit/Adafruit_BMP280_Library.git
+[submodule "libraries/Adafruit_MCP9808"]
+	path = libraries/Adafruit_MCP9808
+	url = https://github.com/adafruit/Adafruit_MCP9808_Library.git
+[submodule "libraries/RadioHead"]
+	path = libraries/RadioHead
+	url = https://github.com/adafruit/RadioHead.git
+[submodule "libraries/Adafruit_GPS"]
+	path = libraries/Adafruit_GPS
+	url = https://github.com/adafruit/Adafruit_GPS.git
