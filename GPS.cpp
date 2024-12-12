@@ -1,7 +1,7 @@
 #include "GPS.h"
 
-GPS::GPS(unit8_t serial, uint32_t baud_rate)
-: gps(HW_SERIAL(serial))
+GPS::GPS(uint8_t serial, uint32_t baud_rate)
+: gps(&HW_SERIAL(serial))
 {
     gps.begin(baud_rate);
 }

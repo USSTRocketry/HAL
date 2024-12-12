@@ -6,7 +6,7 @@
 #define I2C_WIRE1   1 // (SDA = 17, SCL = 16)
 #define I2C_WIRE2   2 // (SDA = 25, SCL = 24)
 
-#define I2C_WIRE(w) (w == 0 ? Wire : (w == 1 ? Wire1 : Wire2))
+#define MAP_I2C_WIRE(w) (w == 0 ? Wire : (w == 1 ? Wire1 : Wire2))
 
 #define SENSOR_MODE_I2C 0
 #define SENSOR_MODE_SPI 1

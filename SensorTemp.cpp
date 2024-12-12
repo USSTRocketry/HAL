@@ -9,7 +9,7 @@ SensorTemperature::~SensorTemperature() {}
 uint8_t SensorTemperature::begin()
 {
     // Initialize the MCP9808 sensor using the selected I2C wire and address
-    status = mcp9808.begin(i2c_addr, &I2C_WIRE(i2c_wire));
+    status = mcp9808.begin(i2c_addr, &MAP_I2C_WIRE(i2c_wire));
     return status;
 }
 

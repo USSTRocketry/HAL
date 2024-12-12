@@ -1,6 +1,48 @@
 # HAL
 
-# SensorBMP280 Documentation
+# HAL and `platformio.ini` Configuration
+
+## Adding HAL as a Submodule
+
+1. Navigate to your platformIO project directory
+
+2. Add the HAL repository as a submodule in `lib/`:
+   ```bash
+   git submodule add https://github.com/USSTRocketry/HAL.git lib/HAL
+   git submodule update --init --recursive
+   ```
+
+## Updating `platformio.ini`
+
+Add these dependencies under `[env]` in `platformio.ini`:
+
+```ini
+lib_deps =
+  SPI
+  RadioHead
+  https://github.com/adafruit/Adafruit_BMP280_Library
+  https://github.com/adafruit/Adafruit_BusIO
+  https://github.com/adafruit/Adafruit_GPS
+  https://github.com/adafruit/Adafruit_LIS3MDL
+  https://github.com/adafruit/Adafruit_LSM6DS
+  https://github.com/adafruit/Adafruit_MCP9808
+  https://github.com/adafruit/Adafruit_Sensor
+```
+
+## Verifying
+
+1. Install dependencies:
+   ```bash
+   pio lib install
+   ```
+
+2. Build the project:
+   ```bash
+   pio run
+   ```
+
+
+# SensorBMP280
 
 The `SensorBMP280` class allows interaction with the **Adafruit BMP280** sensor for measuring temperature, pressure, and altitude. It supports both **I2C** and **SPI** communication modes.
 
@@ -96,7 +138,7 @@ void loop() {
 }
 ```
 
-# SensorAccelGyro Documentation
+# SensorAccelGyro
 
 The `SensorAccelGyro` class provides an interface for interfacing with an accelerometer and gyroscope sensor (e.g., LSM6DSOX). It supports communication via both I2C and SPI protocols and provides methods to initialize and read data from the sensor.
 
@@ -202,7 +244,7 @@ void loop() {
 
 ---
 
-# SensorMagnetometer Documentation
+# SensorMagnetometer
 
 The `SensorMagnetometer` class provides an interface for working with a magnetometer sensor (e.g., Adafruit LIS3MDL). It supports communication via both I2C and SPI protocols, allowing flexible hardware integration.
 
@@ -303,7 +345,7 @@ void loop() {
 }
 ```
 
-# SensorTemperature Documentation
+# SensorTemperature
 
 The `SensorTemperature` class provides an interface to interact with the MCP9808 temperature sensor. It supports communication over the I2C protocol and provides methods to initialize and read temperature data.
 
@@ -365,7 +407,7 @@ void loop() {
 }
 ```
 
-# GPS Documentation
+# GPS
 
 The `GPS` class provides an interface for integrating GPS modules using the Adafruit GPS library. It supports hardware serial communication and provides methods for configuration, data retrieval, and command communication.
 
@@ -450,79 +492,68 @@ void loop() {
 }
 ```
 
-# RYLR998Radio Documentation
 
-The `RYLR998Radio` class provides an interface for the RYLR998 LoRa module, enabling long-range communication over LoRa networks. It supports configurable hardware serial communication on compatible microcontrollers like the Teensy.
+# RYLR998Radio
+
+The `RYLR998Radio` class provides a high-level interface for communicating with the RYLR998 LoRa module. It supports basic operations such as sending and receiving data, configuring LoRa parameters, and setting transmission parameters.
 
 ---
 
 ## Features
 
-- Supports hardware serial communication for Teensy and similar boards.
-- Provides methods for sending and receiving data.
-- Allows configuration of LoRa parameters such as frequency, transmission power, spreading factor, bandwidth, and coding rate.
+- Simple API for sending and receiving data.
+- Adjustable frequency, transmission power, and LoRa parameters.
+- Uses Teensy hardware serial.
 
 ---
 
 ## Constructor Parameters
 
-```cpp
-RYLR998Radio(uint8_t serialPort = RYLR998_HW_SERIAL, uint32_t baudRate = 9600);
-```
+### `RYLR998Radio(uint8_t serialPort, uint32_t baudRate)`
 
-- **`serialPort`**: The hardware serial port to use for communication with the RYLR998 module. Defaults to `RYLR998_HW_SERIAL`.
-- **`baudRate`**: The communication baud rate. Defaults to `9600`.
+- **`serialPort`**: The hardware serial port to use (e.g., `HW_SERIAL1`, `HW_SERIAL2`, etc.). Default id `HW_SERIAL8`
+- **`baudRate`**: Baud rate for communication. Defaults to `9600`.
 
 ---
 
 ## Public Methods
 
 ### `bool begin()`
-Initializes the LoRa module for communication.
+Initializes the RYLR998 radio module.
 
 - **Returns**: `true` if initialization is successful, `false` otherwise.
 
----
-
 ### `bool send(const uint8_t* data, size_t length)`
-Sends data over the LoRa network.
+Sends data through the LoRa module.
 
 - **Parameters**:
   - `data`: Pointer to the data buffer to send.
-  - `length`: Size of the data buffer.
-- **Returns**: `true` if the data is successfully sent, `false` otherwise.
-
----
+  - `length`: Length of the data buffer.
+- **Returns**: `true` if data is sent successfully, `false` otherwise.
 
 ### `bool receive(uint8_t* buffer, size_t maxLength, size_t& receivedLength)`
-Receives data from the LoRa network.
+Receives data from the LoRa module.
 
 - **Parameters**:
-  - `buffer`: Pointer to the buffer to store received data.
+  - `buffer`: Buffer to store received data.
   - `maxLength`: Maximum size of the buffer.
-  - `receivedLength`: Reference to store the size of the received data.
-- **Returns**: `true` if data is successfully received, `false` otherwise.
-
----
+  - `receivedLength`: Actual length of the received data.
+- **Returns**: `true` if data is received successfully, `false` otherwise.
 
 ### `void setFrequency(float frequency)`
 Sets the operating frequency of the LoRa module.
 
-- **Parameter**:
-  - `frequency`: Frequency in MHz (e.g., `915.0` for the 915 MHz band).
-
----
+- **Parameters**:
+  - `frequency`: Desired frequency in MHz.
 
 ### `void setTxPower(uint8_t power)`
-Configures the transmission power.
+Sets the transmission power of the LoRa module.
 
-- **Parameter**:
-  - `power`: Transmission power level (range depends on the module specifications).
-
----
+- **Parameters**:
+  - `power`: Transmission power level (1-20).
 
 ### `void configureLoRa(uint8_t spreadingFactor, uint16_t bandwidth, uint8_t codingRate)`
-Sets advanced LoRa configuration parameters.
+Configures LoRa-specific parameters.
 
 - **Parameters**:
   - `spreadingFactor`: Value from `6` to `12`, defining the chirp spreading rate.
@@ -533,28 +564,36 @@ Sets advanced LoRa configuration parameters.
 
 ## Example Usage
 
-### Basic Usage
+### Basic Initialization and Transmission
 
 ```cpp
 #include "RYLR998Radio.h"
 
-RYLR998Radio lora;
+// Default Serial is HW_SERIAL8 and default baud rate is 9600
+// so RYLR998Radio radio; is sufficient if using HW_SERIAL8
+RYLR998Radio radio(HW_SERIAL8, 9600);
+
 
 void setup() {
-    Serial.begin(9600);
-    if (!lora.begin()) {
-        Serial.println("Failed to initialize LoRa module!");
+    if (!radio.begin()) {
+        Serial.println("Failed to initialize RYLR998 module!");
+        while (true);
     }
-    lora.setFrequency(915.0);
-    lora.setTxPower(14);
+
+    radio.setFrequency(915.0);
+    radio.setTxPower(14);
+    radio.configureLoRa(7, 125, 1);
 }
 
 void loop() {
     const char* message = "Hello, LoRa!";
-    if (lora.send((uint8_t*)message, strlen(message))) {
+    if (radio.send((const uint8_t*)message, strlen(message))) {
         Serial.println("Message sent successfully!");
+    } else {
+        Serial.println("Failed to send message.");
     }
-    delay(1000);
+
+    delay(2000);
 }
 ```
 
@@ -563,24 +602,169 @@ void loop() {
 ```cpp
 #include "RYLR998Radio.h"
 
-RYLR998Radio lora;
-uint8_t buffer[256];
-size_t receivedLength;
+// Default Serial is HW_SERIAL8 and default baud rate is 9600
+// so RYLR998Radio radio; is sufficient if using HW_SERIAL8
+RYLR998Radio radio(HW_SERIAL8, 9600);
 
 void setup() {
-    Serial.begin(9600);
-    if (!lora.begin()) {
-        Serial.println("Failed to initialize LoRa module!");
-    }
+    Serial.begin(115200);
+    radio.begin();
 }
 
 void loop() {
-    if (lora.receive(buffer, sizeof(buffer), receivedLength)) {
+    uint8_t buffer[256];
+    size_t receivedLength;
+
+    if (radio.receive(buffer, sizeof(buffer), receivedLength)) {
         Serial.print("Received: ");
         Serial.write(buffer, receivedLength);
         Serial.println();
     }
+
     delay(100);
 }
+```
+
+---
+
+## Notes
+
+- Ensure the hardware serial port specified matches your wiring.
+- The `RYLR998_HW_SERIAL` macro defines the default serial port and can be overridden if needed.
+- Supported frequencies and power levels depend on the regional regulations for LoRa communication.
+
+---
+
+# RFM95Radio
+
+The `RFM95Radio` class provides an interface for the RFM95 LoRa transceiver, offering configurable SPI communication and LoRa-specific features like frequency, power, and modulation settings.
+
+---
+
+## Features
+
+- LoRa communication via RFM95 transceiver.
+- Configurable SPI port for flexible hardware compatibility.
+- Adjustable frequency, transmission power, and LoRa modulation parameters.
+
+---
+
+## Constructor
+
+### `RFM95Radio(uint8_t csPin, uint8_t intPin, uint8_t spiIndex = HW_SPI0, float frequency = 915.0)`
+Initializes an RFM95Radio instance.
+
+- **`csPin`**: Chip Select pin for SPI communication.
+- **`intPin`**: Interrupt pin connected to the RFM95's DIO0.
+- **`spiIndex`**: SPI port index (`HW_SPI0`, `HW_SPI1`, `HW_SPI2`).
+- **`frequency`**: Operating frequency in MHz (default: `915.0`).
+
+---
+
+## Methods
+
+### `bool begin()`
+Initializes the RFM95 transceiver.
+
+- **Returns**: 
+  - `true` if initialization is successful.
+  - `false` otherwise.
+
+---
+
+### `bool send(const uint8_t* data, size_t length)`
+Sends data via LoRa.
+
+- **Parameters**:
+  - `data`: Pointer to the data buffer to send.
+  - `length`: Length of the data in bytes.
+- **Returns**: 
+  - `true` if the data was successfully sent.
+  - `false` otherwise.
+
+---
+
+### `bool receive(uint8_t* buffer, size_t maxLength, size_t& receivedLength)`
+Receives data via LoRa.
+
+- **Parameters**:
+  - `buffer`: Pointer to the buffer to store received data.
+  - `maxLength`: Maximum length of the buffer.
+  - `receivedLength`: Reference to store the actual length of the received data.
+- **Returns**: 
+  - `true` if data was successfully received.
+  - `false` otherwise.
+
+---
+
+### `void setFrequency(float frequency)`
+Sets the operating frequency of the RFM95 transceiver.
+
+- **Parameters**:
+  - `frequency`: Operating frequency in MHz.
+
+---
+
+### `void setTxPower(uint8_t power)`
+Sets the transmission power of the RFM95 transceiver.
+
+- **Parameters**:
+  - `power`: Transmission power in dBm (typically between `5` and `23`).
+
+---
+
+### `void configureLoRa(uint8_t spreadingFactor, uint16_t bandwidth, uint8_t codingRate)`
+Configures LoRa modulation parameters.
+
+- **Parameters**:
+  - `spreadingFactor`: LoRa spreading factor (e.g., `7` to `12`).
+  - `bandwidth`: LoRa bandwidth in Hz (e.g., `125000` for 125 kHz).
+  - `codingRate`: LoRa coding rate (e.g., `1` for 4/5, `4` for 4/8).
+
+---
+
+## Example Usage
+
+### Basic Initialization and Communication
+
+```cpp
+#include "RFM95Radio.h"
+
+// Define RFM95 pins and SPI index
+#define CS_PIN 10
+#define INT_PIN 2
+#define SPI_INDEX HW_SPI1
+
+RFM95Radio radio(CS_PIN, INT_PIN, SPI_INDEX);
+
+void setup() {
+    Serial.begin(9600);
+    if (!radio.begin()) {
+        Serial.println("Failed to initialize RFM95!");
+        while (1);
+    }
+    radio.setFrequency(915.0);
+    radio.setTxPower(20);
+}
+
+void loop() {
+    // Send a message
+    const char* message = "Hello, LoRa!";
+    if (radio.send((const uint8_t*)message, strlen(message))) {
+        Serial.println("Message sent!");
+    }
+
+    // Receive a message
+    uint8_t buffer[64];
+    size_t length;
+    if (radio.receive(buffer, sizeof(buffer), length)) {
+        Serial.print("Received: ");
+        Serial.write(buffer, length);
+        Serial.println();
+    }
+
+    delay(1000);
+}
+
 ```
 

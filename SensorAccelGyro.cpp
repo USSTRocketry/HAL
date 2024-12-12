@@ -15,7 +15,7 @@ uint8_t SensorAccelGyro::begin()
 {
     if(sensor_mode == SENSOR_MODE_I2C)
     {
-        status = lsm6dsox.begin_I2C(i2c_addr, &I2C_WIRE(i2c_wire), 0);
+        status = lsm6dsox.begin_I2C(i2c_addr, &MAP_I2C_WIRE(i2c_wire), 0);
     } else
     {
         status = lsm6dsox.begin_SPI(spi_cs, spi_sck, spi_miso, spi_mosi);

@@ -1,7 +1,21 @@
 #include "RFM95Radio.h"
 
-RFM95Radio::RFM95Radio(uint8_t csPin, uint8_t intPin, float frequency)
-    : rf95(csPin, intPin), csPin(csPin), intPin(intPin), frequency(frequency) {}
+RFM95Radio::RFM95Radio(uint8_t csPin, uint8_t intPin, uint8_t spiIndex, float frequency)
+    : rf95(csPin, intPin, *getSPIInstance(spiIndex))
+    , csPin(csPin)
+    , intPin(intPin)
+    , frequency(frequency)
+    , spiIndex(spiIndex)
+{}
+
+RHGenericSPI* RFM95Radio::getSPIInstance(uint8_t spiIndex) {
+    if (spiIndex == HW_SPI1) {
+        return &hardware_spi1;
+    } else if (spiIndex == HW_SPI2) {
+        return &hardware_spi2;
+    }
+    return &hardware_spi; // Default to SPI0
+}
 
 bool RFM95Radio::begin() {
     if (!rf95.init()) {
@@ -40,7 +54,7 @@ void RFM95Radio::setTxPower(uint8_t power) {
 void RFM95Radio::configureLoRa(uint8_t spreadingFactor, uint16_t bandwidth, uint8_t codingRate) {
     // The RadioHead library does not provide direct access to these settings,
     // but they are typically configured at the register level in RH_RF95.
-    // Example for manual register configuration (if needed):
+    // Example for manual register configuration:
     // rf95.spiWrite(RH_RF95_REG_1D_MODEM_CONFIG1, (bandwidth << 4) | (codingRate << 1));
     // rf95.spiWrite(RH_RF95_REG_1E_MODEM_CONFIG2, (spreadingFactor << 4) | 0x04);
 }

@@ -2,6 +2,7 @@
 
 #include <Adafruit_GPS.h>
 #include <HardwareSerial.h>
+#include <cstdint>
 
 #include "types.h"
 #include "PINS.h"

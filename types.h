@@ -1,4 +1,5 @@
 #pragma once
+#include <cstdint>
 
 // Define macros for selecting hardware serial ports and corresponding pins
 #define HW_SERIAL1 1  // Serial1 (RX = 0, TX = 1)
@@ -19,6 +20,10 @@
                         : (w == 7 ? Serial7 \
                         : Serial8 \
                         )))))))
+
+#define HW_SPI0             0 // hardware_spi  (MISO = , MOSI = , SCK = )
+#define HW_SPI1             1 // hardware_spi1 (MISO = , MOSI = , SCK = )
+#define HW_SPI2             2 // hardware_spi2 (MISO = , MOSI = , SCK = )
 
 typedef struct _bmp280Data
 {
