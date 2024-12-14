@@ -2,16 +2,16 @@
 
 SensorBMP280::SensorBMP280(uint8_t i2c_addr, uint8_t i2c_wire, float ground_alt)
 : Sensor(i2c_addr, i2c_wire)
+, bmp(&MAP_I2C_WIRE(i2c_wire))
 , ground_alt(ground_alt)
 {
-    bmp = Adafruit_BMP280(&MAP_I2C_WIRE(i2c_wire));
 }
 
 SensorBMP280::SensorBMP280(uint8_t cs, uint8_t miso, uint8_t mosi, uint8_t sck, float ground_alt)
 : Sensor(cs, miso, mosi, sck)
+, bmp(cs, mosi, miso, sck)
 , ground_alt(ground_alt)
 {
-    bmp = Adafruit_BMP280(cs, mosi, miso, sck);
 }
 
 SensorBMP280::~SensorBMP280(){}

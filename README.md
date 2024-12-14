@@ -1,48 +1,6 @@
 # HAL
 
-# HAL and `platformio.ini` Configuration
-
-## Adding HAL as a Submodule
-
-1. Navigate to your platformIO project directory
-
-2. Add the HAL repository as a submodule in `lib/`:
-   ```bash
-   git submodule add https://github.com/USSTRocketry/HAL.git lib/HAL
-   git submodule update --init --recursive
-   ```
-
-## Updating `platformio.ini`
-
-Add these dependencies under `[env]` in `platformio.ini`:
-
-```ini
-lib_deps =
-  SPI
-  RadioHead
-  https://github.com/adafruit/Adafruit_BMP280_Library
-  https://github.com/adafruit/Adafruit_BusIO
-  https://github.com/adafruit/Adafruit_GPS
-  https://github.com/adafruit/Adafruit_LIS3MDL
-  https://github.com/adafruit/Adafruit_LSM6DS
-  https://github.com/adafruit/Adafruit_MCP9808
-  https://github.com/adafruit/Adafruit_Sensor
-```
-
-## Verifying
-
-1. Install dependencies:
-   ```bash
-   pio lib install
-   ```
-
-2. Build the project:
-   ```bash
-   pio run
-   ```
-
-
-# SensorBMP280
+# SensorBMP280 Documentation
 
 The `SensorBMP280` class allows interaction with the **Adafruit BMP280** sensor for measuring temperature, pressure, and altitude. It supports both **I2C** and **SPI** communication modes.
 
@@ -138,7 +96,7 @@ void loop() {
 }
 ```
 
-# SensorAccelGyro
+# SensorAccelGyro Documentation
 
 The `SensorAccelGyro` class provides an interface for interfacing with an accelerometer and gyroscope sensor (e.g., LSM6DSOX). It supports communication via both I2C and SPI protocols and provides methods to initialize and read data from the sensor.
 
@@ -244,7 +202,7 @@ void loop() {
 
 ---
 
-# SensorMagnetometer
+# SensorMagnetometer Documentation
 
 The `SensorMagnetometer` class provides an interface for working with a magnetometer sensor (e.g., Adafruit LIS3MDL). It supports communication via both I2C and SPI protocols, allowing flexible hardware integration.
 
@@ -345,7 +303,7 @@ void loop() {
 }
 ```
 
-# SensorTemperature
+# SensorTemperature Documentation
 
 The `SensorTemperature` class provides an interface to interact with the MCP9808 temperature sensor. It supports communication over the I2C protocol and provides methods to initialize and read temperature data.
 
@@ -407,7 +365,7 @@ void loop() {
 }
 ```
 
-# GPS
+# GPS Documentation
 
 The `GPS` class provides an interface for integrating GPS modules using the Adafruit GPS library. It supports hardware serial communication and provides methods for configuration, data retrieval, and command communication.
 
@@ -493,7 +451,7 @@ void loop() {
 ```
 
 
-# RYLR998Radio
+# RYLR998Radio Documentation
 
 The `RYLR998Radio` class provides a high-level interface for communicating with the RYLR998 LoRa module. It supports basic operations such as sending and receiving data, configuring LoRa parameters, and setting transmission parameters.
 
@@ -634,137 +592,4 @@ void loop() {
 - Supported frequencies and power levels depend on the regional regulations for LoRa communication.
 
 ---
-
-# RFM95Radio
-
-The `RFM95Radio` class provides an interface for the RFM95 LoRa transceiver, offering configurable SPI communication and LoRa-specific features like frequency, power, and modulation settings.
-
----
-
-## Features
-
-- LoRa communication via RFM95 transceiver.
-- Configurable SPI port for flexible hardware compatibility.
-- Adjustable frequency, transmission power, and LoRa modulation parameters.
-
----
-
-## Constructor
-
-### `RFM95Radio(uint8_t csPin, uint8_t intPin, uint8_t spiIndex = HW_SPI0, float frequency = 915.0)`
-Initializes an RFM95Radio instance.
-
-- **`csPin`**: Chip Select pin for SPI communication.
-- **`intPin`**: Interrupt pin connected to the RFM95's DIO0.
-- **`spiIndex`**: SPI port index (`HW_SPI0`, `HW_SPI1`, `HW_SPI2`).
-- **`frequency`**: Operating frequency in MHz (default: `915.0`).
-
----
-
-## Methods
-
-### `bool begin()`
-Initializes the RFM95 transceiver.
-
-- **Returns**: 
-  - `true` if initialization is successful.
-  - `false` otherwise.
-
----
-
-### `bool send(const uint8_t* data, size_t length)`
-Sends data via LoRa.
-
-- **Parameters**:
-  - `data`: Pointer to the data buffer to send.
-  - `length`: Length of the data in bytes.
-- **Returns**: 
-  - `true` if the data was successfully sent.
-  - `false` otherwise.
-
----
-
-### `bool receive(uint8_t* buffer, size_t maxLength, size_t& receivedLength)`
-Receives data via LoRa.
-
-- **Parameters**:
-  - `buffer`: Pointer to the buffer to store received data.
-  - `maxLength`: Maximum length of the buffer.
-  - `receivedLength`: Reference to store the actual length of the received data.
-- **Returns**: 
-  - `true` if data was successfully received.
-  - `false` otherwise.
-
----
-
-### `void setFrequency(float frequency)`
-Sets the operating frequency of the RFM95 transceiver.
-
-- **Parameters**:
-  - `frequency`: Operating frequency in MHz.
-
----
-
-### `void setTxPower(uint8_t power)`
-Sets the transmission power of the RFM95 transceiver.
-
-- **Parameters**:
-  - `power`: Transmission power in dBm (typically between `5` and `23`).
-
----
-
-### `void configureLoRa(uint8_t spreadingFactor, uint16_t bandwidth, uint8_t codingRate)`
-Configures LoRa modulation parameters.
-
-- **Parameters**:
-  - `spreadingFactor`: LoRa spreading factor (e.g., `7` to `12`).
-  - `bandwidth`: LoRa bandwidth in Hz (e.g., `125000` for 125 kHz).
-  - `codingRate`: LoRa coding rate (e.g., `1` for 4/5, `4` for 4/8).
-
----
-
-## Example Usage
-
-### Basic Initialization and Communication
-
-```cpp
-#include "RFM95Radio.h"
-
-// Define RFM95 pins and SPI index
-#define CS_PIN 10
-#define INT_PIN 2
-#define SPI_INDEX HW_SPI1
-
-RFM95Radio radio(CS_PIN, INT_PIN, SPI_INDEX);
-
-void setup() {
-    Serial.begin(9600);
-    if (!radio.begin()) {
-        Serial.println("Failed to initialize RFM95!");
-        while (1);
-    }
-    radio.setFrequency(915.0);
-    radio.setTxPower(20);
-}
-
-void loop() {
-    // Send a message
-    const char* message = "Hello, LoRa!";
-    if (radio.send((const uint8_t*)message, strlen(message))) {
-        Serial.println("Message sent!");
-    }
-
-    // Receive a message
-    uint8_t buffer[64];
-    size_t length;
-    if (radio.receive(buffer, sizeof(buffer), length)) {
-        Serial.print("Received: ");
-        Serial.write(buffer, length);
-        Serial.println();
-    }
-
-    delay(1000);
-}
-
-```
 
