@@ -3,7 +3,8 @@
 #include <cstdint>
 #include <string>
 
-class TelemetryRadio {
+class TelemetryRadio
+{
 public:
     virtual ~TelemetryRadio() {}
 
@@ -14,7 +15,7 @@ public:
     virtual bool send(const uint8_t* data, size_t length) = 0;
 
     // Receive data from the radio
-    virtual bool receive(uint8_t* buffer, size_t maxLength, size_t& receivedLength) = 0;
+    virtual std::pair<bool, size_t> receive(uint8_t* buffer, size_t maxLength) = 0;
 
     // Set a custom frequency
     virtual void setFrequency(float frequency) = 0;

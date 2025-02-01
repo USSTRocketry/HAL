@@ -1,17 +1,17 @@
 #include "SensorMagnetometer.h"
 
-SensorMagnetometer::SensorMagnetometer(uint8_t i2c_addr, uint8_t i2c_wire)
-: Sensor(i2c_addr, i2c_wire)
-{}
+SensorMagnetometer::SensorMagnetometer(uint8_t i2c_addr, uint8_t i2c_wire) : Sensor(i2c_addr, i2c_wire) {}
 
-SensorMagnetometer::SensorMagnetometer(uint8_t cs, uint8_t miso, uint8_t mosi, uint8_t sck)
-: Sensor(cs, miso, mosi, sck)
-{}
+SensorMagnetometer::SensorMagnetometer(uint8_t cs, uint8_t miso, uint8_t mosi, uint8_t sck) :
+    Sensor(cs, miso, mosi, sck)
+{
+}
 
 SensorMagnetometer::~SensorMagnetometer() {}
 
 uint8_t SensorMagnetometer::begin()
 {
+
     if (sensor_mode == SENSOR_MODE_I2C)
     {
         status = lis3mdl.begin_I2C(i2c_addr, &MAP_I2C_WIRE(i2c_wire));
@@ -33,13 +33,13 @@ uint8_t SensorMagnetometer::begin()
     return status;
 }
 
-MagnetometerData* SensorMagnetometer::read()
+MagnetometerData& SensorMagnetometer::read()
 {
     lis3mdl.getEvent(&mag_event);
 
-    data.magneticX   = mag_event.magnetic.x;
-    data.magneticY   = mag_event.magnetic.y;
-    data.magneticZ   = mag_event.magnetic.z;
+    data.magneticX = mag_event.magnetic.x;
+    data.magneticY = mag_event.magnetic.y;
+    data.magneticZ = mag_event.magnetic.z;
 
-    return &data;
+    return data;
 }

@@ -12,20 +12,21 @@
  * @brief Represents a telemetry radio interface using the RFM95 (915MHz and 433MHz) LoRa module.
  *
  */
-class RFM95Radio : public TelemetryRadio {
+class RFM95Radio : public TelemetryRadio
+{
 private:
-    RH_RF95 rf95;          ///< Instance of RH_RF95 for LoRa communication
-    uint8_t csPin;         ///< Chip Select (CS) pin for SPI communication
-    uint8_t intPin;        ///< Interrupt pin for RFM95
-    float frequency;       ///< Frequency of the RFM95 in MHz
-    uint8_t spiIndex;      ///< SPI interface index (0->SPI0, 1->SPI1, or 2->SPI2)
+    RH_RF95 rf95;     ///< Instance of RH_RF95 for LoRa communication
+    uint8_t csPin;    ///< Chip Select (CS) pin for SPI communication
+    uint8_t intPin;   ///< Interrupt pin for RFM95
+    float frequency;  ///< Frequency of the RFM95 in MHz
+    uint8_t spiIndex; ///< SPI interface index (0->SPI0, 1->SPI1, or 2->SPI2)
 
     /**
      * @brief Get the RHGenericSPI instance corresponding to the SPI index.
      * @param spiIndex The index of the SPI interface (e.g., HW_SPI0, HW_SPI1, HW_SPI2).
      * @return Pointer to the corresponding RHGenericSPI instance.
      */
-    RHGenericSPI* getSPIInstance(uint8_t spiIndex);
+    RHGenericSPI& getSPIInstance(uint8_t spiIndex);
 
 public:
     /**
@@ -63,7 +64,7 @@ public:
      * @param receivedLength Reference to store the actual received length.
      * @return true if data is received successfully, false otherwise.
      */
-    bool receive(uint8_t* buffer, size_t maxLength, size_t& receivedLength) override;
+    std::pair<bool, size_t> receive(uint8_t* const buffer, size_t maxLength) override;
 
     /**
      * @brief Set the frequency for LoRa communication.
