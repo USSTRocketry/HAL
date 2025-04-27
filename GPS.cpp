@@ -2,17 +2,22 @@
 
 GPS::GPS(uint8_t serial, uint32_t baud_rate)
 : gps(&HW_SERIAL(serial))
-{
-    gps.begin(baud_rate);
+, baud_rate(baud_rate)
+{ 
 }
 
 GPS::~GPS() {}
 
-void GPS::begin()
+bool GPS::begin()
 {
-    gps.sendCommand(PMTK_SET_NMEA_OUTPUT_RMCGGA);   // Output RMC and GGA sentences
-    gps.sendCommand(PMTK_SET_NMEA_UPDATE_1HZ);     // Update every 1 second
-    gps.sendCommand(PGCMD_ANTENNA);                // Request antenna status
+    if (gps.begin(baud_rate)){
+        gps.sendCommand(PMTK_SET_NMEA_OUTPUT_RMCGGA);   // Output RMC and GGA sentences
+        gps.sendCommand(PMTK_SET_NMEA_UPDATE_1HZ);     // Update every 1 second
+        gps.sendCommand(PGCMD_ANTENNA);                // Request antenna status
+        return true;
+    }else{
+        return false;
+    }
 }
 
 // Configure GPS settings
@@ -32,13 +37,47 @@ void GPS::configure(uint32_t update_rate_ms, const char* output_mode)
     }
 }
 
-GPSData* GPS::read()
+void GPS::update()
 {
+    // Update GPS data
+    char c = gps.read();
     if (gps.newNMEAreceived()) {
         if (!gps.parse(gps.lastNMEA())) {
-            return nullptr;  // Skip invalid data
+            return;  // Skip invalid data
         }
     }
+}
+
+GPSData* GPS::read()
+{
+    // Read GPS data
+    // char c = gps.read();
+    // if (c) Serial.printf("GPS CHAR: %c\n", c);
+    // if (gps.newNMEAreceived()) {
+    //     if (!gps.parse(gps.lastNMEA())) {
+    //         return nullptr;  // Skip invalid data
+    //     }
+    // }
+
+    // Serial.print("\nTime: ");
+    // if (gps.hour < 10) { Serial.print('0'); }
+    // Serial.print(gps.hour, DEC); Serial.print(':');
+    // if (gps.minute < 10) { Serial.print('0'); }
+    // Serial.print(gps.minute, DEC); Serial.print(':');
+    // if (gps.seconds < 10) { Serial.print('0'); }
+    // Serial.print(gps.seconds, DEC); Serial.print('.');
+    // if (gps.milliseconds < 10) {
+    //   Serial.print("00");
+    // } else if (gps.milliseconds > 9 && gps.milliseconds < 100) {
+    //   Serial.print("0");
+    // }
+    // Serial.println(gps.milliseconds);
+    // Serial.print("Date: ");
+    // Serial.print(gps.day, DEC); Serial.print('/');
+    // Serial.print(gps.month, DEC); Serial.print("/20");
+    // Serial.println(gps.year, DEC);
+    // Serial.print("Fix: "); Serial.print((int)gps.fix);
+    // Serial.print(" quality: "); Serial.println((int)gps.fixquality);
 
     if (hasFix()) {
         data.latitude = gps.latitudeDegrees;

@@ -10,6 +10,8 @@ public:
     // Initialize the radio with default or customized settings
     virtual bool begin() = 0;
 
+    virtual void reset(uint8_t resetPin = 127) = 0; // Non esistent pin
+
     // Send data over the radio
     virtual bool send(const uint8_t* data, size_t length) = 0;
 

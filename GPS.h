@@ -13,6 +13,7 @@ class GPS
 
 private:
     Adafruit_GPS gps;
+    uint32_t baud_rate;
 public:
     GPSData data;
 
@@ -20,9 +21,10 @@ public:
     GPS(uint8_t serial = GPS_HW_SERIAL, uint32_t baud_rate = 9600);
     ~GPS();
 
-    void begin();
+    bool begin();
     void configure(uint32_t update_rate_ms = 1000, const char* output_mode = PMTK_SET_NMEA_OUTPUT_RMCONLY);
     GPSData* read();
+    void update();
     bool hasFix();
     void sendCommand(const char* command);
 };

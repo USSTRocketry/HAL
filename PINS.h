@@ -32,6 +32,7 @@
 #define RADIO_G4         41
 #define RADIO_G5         40
 #define RADIO_INT        RADIO_G0 // Interrupt pin
+#define RADIO_SPI        HW_SPI1 
 
 //RYLR998 UART radio
 #define RADIO2_TX        34
