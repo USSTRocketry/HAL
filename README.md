@@ -768,3 +768,196 @@ void loop() {
 
 ```
 
+# Everything test
+```cpp
+#include <Arduino.h>
+#include <Wire.h>
+#include "Avionics_HAL.h"
+
+
+/*
+I2C device found at address 0x18 (MCP9808) (Temperature Sensor)
+I2C device found at address 0x1E (LIS3MDL) (Magnetometer)
+I2C device found at address 0x6B (LSM6DS3) (Accelerometer and Gyroscope)
+I2C device found at address 0x77 (BMP280)  (Pressure Sensor)
+*/
+
+SensorBMP280 bmp280Sensor;
+SensorAccelGyro accelGyro(0x6B, I2C_WIRE);
+SensorMagnetometer magnetometer(0x1E, I2C_WIRE);
+SensorTemperature tempSensor;
+GPS gps(GPS_HW_SERIAL, 9600);
+RFM95Radio radio(RADIO_CS, RADIO_INT, RADIO_SPI, 915.0);
+
+uint32_t timer = millis();
+
+void i2c_adress_detect(){
+    // Check all possible I2C addresses
+    Wire.begin();
+    for (uint8_t address = 0; address < 127; address++) {
+        Wire.beginTransmission(address);
+        if (Wire.endTransmission() == 0) {
+            Serial.print("I2C device found at address 0x");
+            if (address<16)
+                Serial.print("0");
+            Serial.println(address, HEX);
+        }
+    }
+    Serial.println("I2C address detection complete.");
+}
+
+void setup() {
+    Serial.begin(115200);
+    while (!Serial);
+
+    // Run I2C address detection
+    i2c_adress_detect();
+
+
+    Serial.println("Initializing Avionics HAL...");
+
+    // Initialize the BMP280 sensor
+    if (bmp280Sensor.begin()) {
+        Serial.println("BMP280 initialized.");
+    } else {
+        Serial.println("BMP280 Initialization failed.");
+    }
+
+    // Initialize the accelerometer and gyroscope
+    if (accelGyro.begin()) {
+        Serial.println("Accelerometer and Gyroscope initialized.");
+    } else {
+        Serial.println("Accelerometer and Gyroscope Initialization failed.");
+    }
+
+    // Initialize the magnetometer
+    if (magnetometer.begin()) {
+        Serial.println("Magnetometer initialized.");
+    } else {
+        Serial.println("Magnetometer Initialization failed.");
+    }
+
+    // Initialize the temperature sensor
+    if (tempSensor.begin()) {
+        Serial.println("Temperature sensor initialized.");
+    } else {
+        Serial.println("Temperature sensor Initialization failed.");
+    }
+
+    // Initialize the GPS module
+    if (gps.begin()) {
+        //gps.configure(1000, PMTK_SET_NMEA_OUTPUT_RMCONLY);
+        Serial.println("GPS module initialized.");
+    } else {
+        Serial.println("GPS Initialization failed.");
+    }
+
+    // Initialize the RFM95 radio
+    radio.reset(RADIO_RST);
+    if (radio.begin()) {
+        Serial.println("RFM95 radio initialized.");
+        // radio.setTxPower(20);
+    } else {
+        Serial.println("RFM95 Radio Initialization failed.");
+    }
+
+}
+
+
+void loop() {
+
+    // Update GPS data (NECESSARY!!!)
+    gps.update();
+
+    if (millis() - timer > 2000) {
+        // approximately every 2 seconds or so, print out the current stats
+        timer = millis(); // reset the timer
+
+        Serial.println("----------------------------------------------------------------");
+        
+        // Read and print sensor data
+        BMP280Data* bmpData = bmp280Sensor.read();
+        Serial.print("BMP280        - Temperature: ");
+        Serial.print(bmpData->temperature);
+        Serial.print(" °C, Pressure: ");
+        Serial.print(bmpData->pressure);
+        Serial.print(" hPa, Altitude: ");
+        Serial.print(bmpData->altitude);
+        Serial.println(" m");
+
+        AccelGyroData* accelGyroData = accelGyro.read();
+        Serial.print("Accelerometer - X: ");
+        Serial.print(accelGyroData->accelX);
+        Serial.print(" m/s^2, Y: ");
+        Serial.print(accelGyroData->accelY);
+        Serial.print(" m/s^2, Z: ");
+        Serial.print(accelGyroData->accelZ);
+        Serial.print(" m/s^2, Gyro X: ");
+        Serial.print(accelGyroData->gyroX);
+        Serial.print(" °/s, Y: ");
+        Serial.print(accelGyroData->gyroY);
+        Serial.print(" °/s, Z: ");
+        Serial.print(accelGyroData->gyroZ);
+        Serial.print(" °/s, Temperature: ");
+        Serial.print(accelGyroData->temperature);
+        Serial.println(" °C");
+
+        MagnetometerData* magData = magnetometer.read();
+        Serial.print("Magnetometer  - X: ");
+        Serial.print(magData->magneticX);
+        Serial.print(" µT, Y: ");
+        Serial.print(magData->magneticY);
+        Serial.print(" µT, Z: ");
+        Serial.print(magData->magneticZ);
+        Serial.println(" µT");
+
+        float temp = tempSensor.read();
+        Serial.print("Temp Sensor   - Temperature: ");
+        Serial.print(temp);
+        Serial.println(" °C");
+
+
+        GPSData* gpsData = gps.read();
+        if (gpsData) {
+            Serial.print("GPS           - Latitude: ");
+            Serial.print(gpsData->latitude);
+            Serial.print(", Longitude: ");
+            Serial.print(gpsData->longitude);
+            Serial.print(", Altitude: ");
+            Serial.print(gpsData->altitude);
+            Serial.print(" m, Speed: ");
+            Serial.print(gpsData->speed);
+            Serial.print(" knots, Angle: ");
+            Serial.print(gpsData->angle);
+            Serial.println(" °");
+        } else {
+            Serial.println("GPS data not available.");
+        }
+        // Send data over the radio
+        // uint8_t dataToSend[10] = {0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0A};
+        // if (radio.send(dataToSend, sizeof(dataToSend))) {
+        //     Serial.println("Data sent successfully.");
+        // } else {
+        //     Serial.println("Failed to send data.");
+        // }
+        // // Receive data from the radio
+        // uint8_t receivedData[10];
+        // size_t receivedLength = 0;
+        // if (radio.receive(receivedData, sizeof(receivedData), receivedLength)) {
+        //     Serial.print("Received data: ");
+        //     for (size_t i = 0; i < receivedLength; ++i) {
+        //         Serial.print(receivedData[i], HEX);
+        //         Serial.print(" ");
+        //     }
+        //     Serial.println();
+        // } else {
+        //     Serial.println("No data received.");
+        // }
+        // delay(1000); // Delay for 1 second
+
+        Serial.println("");
+    }
+}
+
+```
+
