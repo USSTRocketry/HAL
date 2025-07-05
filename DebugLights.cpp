@@ -2,6 +2,14 @@
 #include <PINS.h>
 #include <Arduino.h>
 
+DebugLights::DebugLights(/* args */)
+{
+}
+
+DebugLights::~DebugLights()
+{
+}
+
 /// @brief adds an error to the list of errors
 /// @param err the error that is added
 void DebugLights::AddError(ErrorCodes err){

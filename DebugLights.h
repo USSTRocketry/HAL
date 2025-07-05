@@ -1,3 +1,4 @@
+#pragma once
 #include <list>
 
 
@@ -35,12 +36,6 @@ private:
     bool HasErrors();
 };
 
-DebugLights::DebugLights(/* args */)
-{
-}
 
-DebugLights::~DebugLights()
-{
-}
 
 
