@@ -12,7 +12,7 @@ SensorMagnetometer::~SensorMagnetometer() {}
 uint8_t SensorMagnetometer::begin()
 {
 
-    if (sensor_mode == SENSOR_MODE_I2C)
+    if (sensor_mode == SensorMode::I2C)
     {
         status = lis3mdl.begin_I2C(i2c_addr, &MAP_I2C_WIRE(i2c_wire));
     }

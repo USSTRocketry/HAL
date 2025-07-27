@@ -4,11 +4,9 @@ SensorAccelGyro::SensorAccelGyro(uint8_t i2c_addr, uint8_t i2c_wire) : Sensor(i2
 
 SensorAccelGyro::SensorAccelGyro(uint8_t cs, uint8_t miso, uint8_t mosi, uint8_t sck) : Sensor(cs, miso, mosi, sck) {}
 
-SensorAccelGyro::~SensorAccelGyro() {}
-
 uint8_t SensorAccelGyro::begin()
 {
-    if (sensor_mode == SENSOR_MODE_I2C)
+    if (sensor_mode == SensorMode::I2C)
     {
         status = lsm6dsox.begin_I2C(i2c_addr, &MAP_I2C_WIRE(i2c_wire), 0);
     }
@@ -22,6 +20,7 @@ uint8_t SensorAccelGyro::begin()
 
 AccelGyroData& SensorAccelGyro::read()
 {
+    sensors_event_t accel, gyro, temp;
     lsm6dsox.getEvent(&accel, &gyro, &temp);
     data.temperature = temp.temperature;
     data.accelX      = accel.acceleration.x;

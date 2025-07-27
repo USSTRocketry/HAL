@@ -1,24 +1,15 @@
 #include "GPS.h"
 
-<<<<<<< HEAD
-GPS::GPS(uint8_t serial, uint32_t baud_rate) : gps(&HW_SERIAL(serial)) { gps.begin(baud_rate); }
-=======
 GPS::GPS(uint8_t serial, uint32_t baud_rate)
 : gps(&HW_SERIAL(serial))
 , baud_rate(baud_rate)
 { 
 }
->>>>>>> main
 
 GPS::~GPS() {}
 
 bool GPS::begin()
 {
-<<<<<<< HEAD
-    gps.sendCommand(PMTK_SET_NMEA_OUTPUT_RMCGGA); // Output RMC and GGA sentences
-    gps.sendCommand(PMTK_SET_NMEA_UPDATE_1HZ);    // Update every 1 second
-    gps.sendCommand(PGCMD_ANTENNA);               // Request antenna status
-=======
     if (gps.begin(baud_rate)){
         gps.sendCommand(PMTK_SET_NMEA_OUTPUT_RMCGGA);   // Output RMC and GGA sentences
         gps.sendCommand(PMTK_SET_NMEA_UPDATE_1HZ);     // Update every 1 second
@@ -27,7 +18,6 @@ bool GPS::begin()
     }else{
         return false;
     }
->>>>>>> main
 }
 
 // Configure GPS settings
@@ -57,15 +47,6 @@ void GPS::configure(uint32_t update_rate_ms, const char* output_mode)
     }
 }
 
-<<<<<<< HEAD
-std::pair<bool, GPSData&> GPS::read()
-{
-    if (gps.newNMEAreceived())
-    {
-        if (!gps.parse(gps.lastNMEA()))
-        {
-            return {false, data}; // Skip invalid data
-=======
 void GPS::update()
 {
     // Update GPS data
@@ -73,12 +54,11 @@ void GPS::update()
     if (gps.newNMEAreceived()) {
         if (!gps.parse(gps.lastNMEA())) {
             return;  // Skip invalid data
->>>>>>> main
         }
     }
 }
 
-GPSData* GPS::read()
+std::pair<bool, GPSData&> read()
 {
     // Read GPS data
     // char c = gps.read();

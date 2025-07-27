@@ -10,10 +10,6 @@ class SensorAccelGyro : Sensor
 private:
     Adafruit_LSM6DSOX lsm6dsox;
 
-    sensors_event_t accel;
-    sensors_event_t gyro;
-    sensors_event_t temp;
-
 public:
     AccelGyroData data;
 
@@ -22,5 +18,5 @@ public:
     SensorAccelGyro(uint8_t cs, uint8_t miso, uint8_t mosi, uint8_t sck);
     uint8_t begin();
     AccelGyroData& read();
-    ~SensorAccelGyro();
+    ~SensorAccelGyro() override = default;
 };
