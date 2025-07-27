@@ -34,7 +34,17 @@ bool RFM95Radio::begin()
     return true;
 }
 
-bool RFM95Radio::send(const uint8_t* data, size_t length) { return rf95.send(data, length) && rf95.waitPacketSent(); }
+void RFM95Radio::reset(uint8_t resetPin) {
+    pinMode(resetPin, OUTPUT);
+    digitalWrite(resetPin, LOW);
+    delay(10); // Wait for 10 ms
+    digitalWrite(resetPin, HIGH);
+    delay(10); // Wait for 10 ms
+}
+
+bool RFM95Radio::send(const uint8_t* data, size_t length) {
+    return rf95.send(data, length) && rf95.waitPacketSent();
+}
 
 std::pair<bool, size_t> RFM95Radio::receive(uint8_t* const buffer, size_t maxLength)
 {

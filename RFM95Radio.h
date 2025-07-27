@@ -36,7 +36,7 @@ public:
      * @param spiIndex      SPI interface index (default: HW_SPI0).
      * @param frequency     Frequency for LoRa communication in MHz (default: 915.0).
      */
-    RFM95Radio(uint8_t csPin, uint8_t intPin, uint8_t spiIndex = HW_SPI0, float frequency = 915.0);
+    RFM95Radio(uint8_t csPin, uint8_t intPin, uint8_t spiIndex = HW_SPI1, float frequency = 915.0);
 
     /**
      * @brief Destructor for the RFM95Radio class.
@@ -48,6 +48,12 @@ public:
      * @return true if initialization succeeds, false otherwise.
      */
     bool begin() override;
+
+    /**
+     * @brief Reset the RFM95 module.
+     */
+    void reset(uint8_t resetPin) override;
+
 
     /**
      * @brief Send data using the RFM95 module.

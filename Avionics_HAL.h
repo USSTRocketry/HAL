@@ -1,5 +1,6 @@
 #pragma once
 
+#include "PINS.h"
 #include "GPS.h"
 #include "GPS.h"
 #include "RFM95Radio.h"
