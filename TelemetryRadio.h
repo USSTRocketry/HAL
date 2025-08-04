@@ -26,4 +26,13 @@ public:
 
     // Configure spreading factor, bandwidth, etc. (LoRa-specific settings)
     virtual void configureLoRa(uint8_t spreadingFactor, uint16_t bandwidth, uint8_t codingRate) = 0;
+
+    // Set radio adress
+    virtual void setAddress(const uint8_t address) = 0;
+
+    // set destination address
+    virtual void setDestinationAddress(const uint8_t address) = 0;
+
+    // Set promiscuous mode for receiving all packets (Only for LoRa)
+    virtual void setPromiscuousMode(bool enable) = 0;
 };

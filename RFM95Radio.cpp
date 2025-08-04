@@ -66,3 +66,19 @@ void RFM95Radio::configureLoRa(uint8_t spreadingFactor, uint16_t bandwidth, uint
     // rf95.spiWrite(RH_RF95_REG_1D_MODEM_CONFIG1, (bandwidth << 4) | (codingRate << 1));
     // rf95.spiWrite(RH_RF95_REG_1E_MODEM_CONFIG2, (spreadingFactor << 4) | 0x04);
 }
+
+void RFM95Radio::setAddress(const uint8_t address) {
+    // Set the address for this RFM95 module
+    rf95.setThisAddress(address);
+    rf95.setHeaderFrom(address); // Set the header from address
+}
+
+void RFM95Radio::setDestinationAddress(const uint8_t address) {
+    // Set the destination address for for communication
+    rf95.setHeaderTo(address); 
+}
+
+void RFM95Radio::setPromiscuousMode(bool enable) {
+    // Enable or disable promiscuous mode
+    rf95.setPromiscuous(enable);
+}

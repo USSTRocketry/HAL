@@ -90,4 +90,22 @@ public:
      * @param codingRate Coding rate (e.g., 5 for 4/5, 6 for 4/6).
      */
     void configureLoRa(uint8_t spreadingFactor, uint16_t bandwidth, uint8_t codingRate) override;
+
+    /**
+     * @brief Set the radio address for the RFM95 module.
+     * @param address Address to set (0-255).
+     */
+    void setAddress(const uint8_t address) override;
+
+    /**
+     * @brief Set the destination address for the RFM95 module.
+     * @param address Destination address to set (0-255).
+     */
+    void setDestinationAddress(const uint8_t address) override;
+
+    /**
+     * @brief Set promiscuous mode for receiving all packets.
+     * @param enable true to enable promiscuous mode, false to disable.
+     */
+    void setPromiscuousMode(bool enable) override;
 };
