@@ -8,3 +8,5 @@
 #include "SensorBMP280.h"
 #include "SensorMagnetometer.h"
 #include "SensorTemp.h"
+#include "Storage.h"
+#include "Chrono.h"
