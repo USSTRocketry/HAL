@@ -1,0 +1,48 @@
+#pragma once
+
+#include "abstractions/IGpsSensor.h"
+#include "types.h"
+#include <cstdint>
+
+/**
+ * @brief Mock implementation of GPS sensor for testing purposes.
+ */
+class MockGpsSensor : public IGpsSensor
+{
+private:
+    GPSData data;
+    uint8_t status;
+
+public:
+    MockGpsSensor()
+        : status(1), data{37.7749f, -122.4194f, 0.0f, 0.0f, 0.0f, 0, 0}
+    {
+    }
+
+    virtual ~MockGpsSensor() = default;
+
+    uint8_t begin() override
+    {
+        return status;
+    }
+
+    uint8_t getStatus() const override
+    {
+        return status;
+    }
+
+    GPSData* read() override
+    {
+        return &data;
+    }
+
+    void setMockData(const GPSData& mockData)
+    {
+        data = mockData;
+    }
+
+    void setStatus(uint8_t newStatus)
+    {
+        status = newStatus;
+    }
+};

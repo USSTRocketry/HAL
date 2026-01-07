@@ -22,7 +22,7 @@ public:
         return S;
     }
     // We only support 1 stream of binary writes for now
-    Result Write(std::span<std::byte>) { /* TODO : */ return Result::Success; }
+    Result Write(const std::byte* data, std::size_t size) { /* TODO : */ return Result::Success; }
 
     Result Flush() { /* TODO: */ return Result::Success; }
 

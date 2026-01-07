@@ -1,5 +1,9 @@
 # HAL
 
+For complete usage, platform selection, testing, and advanced guidance, see the consolidated manual:
+
+- HAL Documentation: [HAL_DOCUMENTATION.md](HAL_DOCUMENTATION.md)
+
 # HAL and `platformio.ini` Configuration
 
 ## Adding HAL as a Submodule

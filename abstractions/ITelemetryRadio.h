@@ -3,9 +3,9 @@
 #include <cstdint>
 #include <string>
 
-class TelemetryRadio {
+class ITelemetryRadio {
 public:
-    virtual ~TelemetryRadio() {}
+    virtual ~ITelemetryRadio() {}
 
     // Initialize the radio with default or customized settings
     virtual bool begin() = 0;
