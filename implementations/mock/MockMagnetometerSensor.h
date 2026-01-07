@@ -4,9 +4,6 @@
 #include "types.h"
 #include <cstdint>
 
-/**
- * @brief Mock implementation of Magnetometer sensor for testing purposes.
- */
 class MockMagnetometerSensor : public IMagnetometerSensor
 {
 private:
@@ -14,7 +11,12 @@ private:
     uint8_t status;
 
 public:
-    MockMagnetometerSensor()
+    MockMagnetometerSensor(uint8_t /*i2c_addr*/ = 0x1E, uint8_t /*i2c_wire*/ = 0)
+        : status(1), data{0.0f, 0.0f, 0.0f}
+    {
+    }
+
+    MockMagnetometerSensor(uint8_t /*cs*/, uint8_t /*miso*/, uint8_t /*mosi*/, uint8_t /*sck*/)
         : status(1), data{0.0f, 0.0f, 0.0f}
     {
     }

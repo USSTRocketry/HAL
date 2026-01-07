@@ -1,16 +1,9 @@
 cmake_minimum_required(VERSION 3.28)
 project(HAL VERSION 0.1 LANGUAGES CXX)
 
-target_compile_features(${PROJECT_NAME} PRIVATE cxx_std_20)
-set_target_properties(${PROJECT_NAME}
-    PROPERTIES
-    SOVERSION 0
-    VERSION 0.1
-)
-
-# Platform selection - set USST_PLATFORM to one of: ARDUINO, STM32, MOCK, DESKTOP
+# Platform selection - set USST_PLATFORM to one of: ARDUINO, STM32, MOCK
 if(NOT DEFINED USST_PLATFORM)
-    set(USST_PLATFORM "ARDUINO" CACHE STRING "Target platform (ARDUINO, STM32, MOCK, DESKTOP)")
+    set(USST_PLATFORM "ARDUINO" CACHE STRING "Target platform (ARDUINO, STM32, MOCK)")
 endif()
 
 message(STATUS "HAL: Building for platform: ${USST_PLATFORM}")
@@ -33,6 +26,9 @@ if(USST_PLATFORM STREQUAL "ARDUINO")
         implementations/arduino/ArduinoRFM95Radio.cpp
         implementations/arduino/ArduinoRYLR998Radio.cpp
         DebugLights.cpp
+        # TODO: Add Arduino SD card storage when implemented
+        # implementations/arduino/ArduinoSDFile.cpp
+        # implementations/arduino/ArduinoSDFileSystem.cpp
     )
 elseif(USST_PLATFORM STREQUAL "STM32")
     message(STATUS "HAL: Including STM32 implementations")
@@ -43,17 +39,25 @@ elseif(USST_PLATFORM STREQUAL "STM32")
         # ... etc
     )
 elseif(USST_PLATFORM STREQUAL "MOCK")
-    message(STATUS "HAL: Using Mock implementations (header-only)")
-    # Mock implementations are header-only, no .cpp files needed
-elseif(USST_PLATFORM STREQUAL "DESKTOP")
-    message(STATUS "HAL: Desktop build - no hardware implementations")
-    # Desktop builds use mocks or custom implementations
+    message(STATUS "HAL: Using Mock implementations (header + file-based storage)")
+    # Mock implementations are mostly header-only; include mock filesystem sources
+    list(APPEND HAL_CORE_SOURCES
+        implementations/mock/MockFile.cpp
+        implementations/mock/MockFileSystem.cpp
+    )
 else()
-    message(FATAL_ERROR "Unknown USST_PLATFORM: ${USST_PLATFORM}. Valid options: ARDUINO, STM32, MOCK, DESKTOP")
+    message(FATAL_ERROR "Unknown USST_PLATFORM: ${USST_PLATFORM}. Valid options: ARDUINO, STM32, MOCK")
 endif()
 
 add_library(${PROJECT_NAME} STATIC
     ${HAL_CORE_SOURCES}
+)
+
+target_compile_features(${PROJECT_NAME} PRIVATE cxx_std_20)
+set_target_properties(${PROJECT_NAME}
+    PROPERTIES
+    SOVERSION 0
+    VERSION 0.1
 )
 
 # Define the platform macro for compile-time selection
@@ -65,6 +69,5 @@ target_compile_definitions(${PROJECT_NAME} PUBLIC
 target_include_directories(${PROJECT_NAME} PUBLIC 
     ${CMAKE_CURRENT_SOURCE_DIR}
     ${CMAKE_CURRENT_SOURCE_DIR}/abstractions
-    ${CMAKE_CURRENT_SOURCE_DIR}/mocks
     ${CMAKE_CURRENT_SOURCE_DIR}/implementations
 )

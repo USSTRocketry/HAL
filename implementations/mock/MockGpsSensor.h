@@ -4,9 +4,6 @@
 #include "types.h"
 #include <cstdint>
 
-/**
- * @brief Mock implementation of GPS sensor for testing purposes.
- */
 class MockGpsSensor : public IGpsSensor
 {
 private:
@@ -14,7 +11,7 @@ private:
     uint8_t status;
 
 public:
-    MockGpsSensor()
+    MockGpsSensor(uint8_t /*serial_port*/ = 1, uint32_t /*baud_rate*/ = 9600)
         : status(1), data{37.7749f, -122.4194f, 0.0f, 0.0f, 0.0f, 0, 0}
     {
     }

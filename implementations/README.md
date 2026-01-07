@@ -149,7 +149,7 @@ See `platformio.ini` for full dependency list.
    - `read()`
 4. Create cpp file: `ArduinoNewSensor.cpp`
 5. Add to CMakeLists.txt
-6. Create mock in `mocks/` directory
+6. If needed, create a corresponding mock in `implementations/mock/`
 
 ## STM32 Template
 

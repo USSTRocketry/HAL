@@ -4,9 +4,6 @@
 #include "types.h"
 #include <cstdint>
 
-/**
- * @brief Mock implementation of Temperature sensor for testing purposes.
- */
 class MockTemperatureSensor : public ITemperatureSensor
 {
 private:
@@ -14,7 +11,7 @@ private:
     uint8_t status;
 
 public:
-    MockTemperatureSensor()
+    MockTemperatureSensor(uint8_t /*i2c_addr*/ = 0x18, uint8_t /*i2c_wire*/ = 0)
         : status(1), data{20.5f}
     {
     }

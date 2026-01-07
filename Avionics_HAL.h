@@ -60,31 +60,14 @@
         using RYLR998Radio = STM32RYLR998Radio;
     }
 
+
 #elif defined(USST_PLATFORM_MOCK)
     // Mock implementations for testing
-    #include "mocks/MockBmp280Sensor.h"
-    #include "mocks/MockAccelGyroSensor.h"
-    #include "mocks/MockMagnetometerSensor.h"
-    #include "mocks/MockTemperatureSensor.h"
-    #include "mocks/MockGpsSensor.h"
-    
-    // Type aliases for easy use
-    namespace HAL {
-        using Bmp280Sensor = MockBmp280Sensor;
-        using AccelGyroSensor = MockAccelGyroSensor;
-        using MagnetometerSensor = MockMagnetometerSensor;
-        using TemperatureSensor = MockTemperatureSensor;
-        using GpsSensor = MockGpsSensor;
-        // No mock radios yet - to be added
-    }
-
-#elif defined(USST_PLATFORM_DESKTOP)
-    // Desktop build - use mocks by default
-    #include "mocks/MockBmp280Sensor.h"
-    #include "mocks/MockAccelGyroSensor.h"
-    #include "mocks/MockMagnetometerSensor.h"
-    #include "mocks/MockTemperatureSensor.h"
-    #include "mocks/MockGpsSensor.h"
+    #include "implementations/mock/MockBmp280Sensor.h"
+    #include "implementations/mock/MockAccelGyroSensor.h"
+    #include "implementations/mock/MockMagnetometerSensor.h"
+    #include "implementations/mock/MockTemperatureSensor.h"
+    #include "implementations/mock/MockGpsSensor.h"
     
     // Type aliases for easy use
     namespace HAL {
@@ -97,5 +80,5 @@
     }
 
 #else
-    #error "No USST_PLATFORM defined! Set USST_PLATFORM in CMakeLists.txt to: ARDUINO, STM32, MOCK, or DESKTOP"
+    #error "No USST_PLATFORM defined! Set USST_PLATFORM in CMakeLists.txt to: ARDUINO, STM32, or MOCK"
 #endif

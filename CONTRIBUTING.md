@@ -138,7 +138,7 @@ void ArduinoMyNewSensor::setSensitivity(uint8_t level) {
 
 ### Step 4: Create a Mock Implementation
 
-Create `mocks/MockMyNewSensor.h`:
+Create `implementations/mock/MockMyNewSensor.h`:
 
 ```cpp
 #pragma once
@@ -219,8 +219,8 @@ Add the sensor to the platform selection:
         using MyNewSensor = STM32MyNewSensor;
     }
 
-#elif defined(USST_PLATFORM_MOCK) || defined(USST_PLATFORM_DESKTOP)
-    #include "mocks/MockMyNewSensor.h"
+#elif defined(USST_PLATFORM_MOCK)
+    #include "implementations/mock/MockMyNewSensor.h"
     
     namespace HAL {
         using MyNewSensor = MockMyNewSensor;
@@ -358,7 +358,7 @@ Before submitting your changes:
 - [ ] Abstract interface created in `abstractions/`
 - [ ] Data structure added to `types.h`
 - [ ] Arduino implementation created in `implementations/arduino/`
-- [ ] Mock implementation created in `mocks/`
+- [ ] Mock implementation created in `implementations/mock/`
 - [ ] CMakeLists.txt updated
 - [ ] Avionics_HAL.h updated with platform selection
 - [ ] Code compiles for ARDUINO platform
@@ -392,7 +392,7 @@ implementations/
         STM32Bmp280Sensor.h
         STM32Bmp280Sensor.cpp
 
-mocks/
+implementations/mock/
     MockBmp280Sensor.h      # Header-only mocks
 ```
 

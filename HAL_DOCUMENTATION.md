@@ -5,11 +5,10 @@
 ## 1. Overview
 
 - **What it is:** A Hardware Abstraction Layer exposing interfaces for sensors and radios.
-- **Why it helps:** Same client code across Arduino, STM32 (future), Mock/desktop builds.
+- **Why it helps:** Same client code across Arduino, STM32 (future), and Mock builds.
 - **How it’s structured:**
   - `abstractions/` — Pure interfaces (platform-agnostic)
-  - `implementations/<platform>/` — Platform-specific classes (e.g., Arduino)
-  - `mocks/` — Simple mocks for hardware-free testing
+  - `implementations/<platform>/` — Platform-specific classes (e.g., Arduino, Mock)
   - `Avionics_HAL.h` — Auto-selects the right implementation via platform macro
 
 ---
@@ -33,7 +32,6 @@ HAL::RFM95Radio radio(10, 11, HW_SPI1);
   - `USST_PLATFORM_ARDUINO`
   - `USST_PLATFORM_STM32` (template)
   - `USST_PLATFORM_MOCK`
-  - `USST_PLATFORM_DESKTOP`
 
 PlatformIO `platformio.ini`:
 ```ini
@@ -43,7 +41,7 @@ build_flags =
 
 CMake (project-level):
 ```cmake
-set(USST_PLATFORM "ARDUINO") # or STM32, MOCK, DESKTOP
+set(USST_PLATFORM "ARDUINO") # or STM32, MOCK
 add_subdirectory(lib/HAL)
 ```
 
@@ -51,7 +49,6 @@ Command line:
 ```bash
 cmake -DUSST_PLATFORM=ARDUINO ..
 cmake -DUSST_PLATFORM=MOCK ..
-cmake -DUSST_PLATFORM=DESKTOP ..
 ```
 
 ---
@@ -158,7 +155,7 @@ Arduino (PlatformIO):
 pio run -e teensy41
 ```
 
-Desktop/Mock (CMake):
+Mock (CMake):
 ```bash
 cmake -B build -DUSST_PLATFORM=MOCK
 cmake --build build
@@ -247,7 +244,7 @@ accel = std::make_unique<HAL::AccelGyroSensor>(0x6A, I2C_WIRE0);
   // Arduino-specific code (e.g., Serial)
 #elif defined(USST_PLATFORM_STM32)
   // STM32 HAL specifics
-#elif defined(USST_PLATFORM_MOCK) || defined(USST_PLATFORM_DESKTOP)
+#elif defined(USST_PLATFORM_MOCK)
   // Desktop/testing
 #endif
 ```
