@@ -26,6 +26,7 @@
     #include "implementations/arduino/ArduinoGpsSensor.h"
     #include "implementations/arduino/ArduinoRFM95Radio.h"
     #include "implementations/arduino/ArduinoRYLR998Radio.h"
+    #include "implementations/arduino/ArduinoWorkQueue.h"
     #include "DebugLights.h"
     
     // Type aliases for easy use
