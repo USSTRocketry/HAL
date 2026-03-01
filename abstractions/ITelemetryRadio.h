@@ -35,4 +35,7 @@ public:
 
     // Set promiscuous mode for receiving all packets (Only for LoRa)
     virtual void setPromiscuousMode(bool enable) = 0;
+
+    // Get the native driver handle
+    virtual void* native_handle() = 0;
 };

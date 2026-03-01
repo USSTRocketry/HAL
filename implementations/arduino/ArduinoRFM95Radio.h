@@ -39,4 +39,5 @@ public:
     void setAddress(const uint8_t address) override;
     void setDestinationAddress(const uint8_t address) override;
     void setPromiscuousMode(bool enable) override;
+    void* native_handle() override;
 };

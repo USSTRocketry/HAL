@@ -109,3 +109,5 @@ void ArduinoRYLR998Radio::setPromiscuousMode(bool enable)
     rylr998_serial->print(enable ? "1" : "0");
     rylr998_serial->print("\r\n");
 }
+
+void* native_handle() { return rylr998_serial; }

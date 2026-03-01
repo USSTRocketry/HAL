@@ -114,3 +114,5 @@ void ArduinoRFM95Radio::setPromiscuousMode(bool enable)
         rf95_instance->setPromiscuous(enable);
     }
 }
+
+void* native_handle() { return rf95_instance; }
