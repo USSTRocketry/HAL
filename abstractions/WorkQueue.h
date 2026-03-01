@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cstdint>
+#include <limits>
 #include <memory>
 #include <utility>
 
@@ -35,6 +36,8 @@ public:
     // Scheduler info
     struct Scheduling
     {
+        static constexpr uint32_t IterationInfinite = std::numeric_limits<uint32_t>::max();
+
         uint32_t DelayMs    = 0;
         uint32_t Iterations = 1;
     };

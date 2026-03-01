@@ -80,7 +80,13 @@ WorkQueue::Status WorkQueue::Deinit() { return Status::Success; }
 // Submit a task
 std::pair<Wq::Status, Wh> Wq::Submit(const SubmitOptions& Options)
 {
-    if (!Options.Exec.Fn || Options.Sched.Iterations == 0) return {Status::InvalidParam, Wh {nullptr}};
+    if (!Options.Exec.Fn) return {Status::InvalidParam, Wh {nullptr}};
+
+    // TaskScheduler uses TASK_FOREVER (-1) for infinite.
+    // Map our InfiniteIterations to TASK_FOREVER.
+    long IterationsCount = (Options.Sched.Iterations == Scheduling::IterationInfinite) 
+                           ? TASK_FOREVER 
+                           : static_cast<long>(Options.Sched.Iterations);
 
     // Select Scheduler based on priority
     Scheduler& TargetScheduler = [&]() -> Scheduler&
@@ -103,7 +109,7 @@ std::pair<Wq::Status, Wh> Wq::Submit(const SubmitOptions& Options)
 
     // Create Task on the heap
     auto* pTask = new Task(static_cast<unsigned long>(Options.Sched.DelayMs),
-                           static_cast<long>(Options.Sched.Iterations),
+                           IterationsCount,
                            nullptr,
                            &TargetScheduler,
                            true,
