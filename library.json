@@ -16,20 +16,15 @@
   "keywords": [
     "hal",
     "avionics",
-    "sensors",
-    "rocketry",
-    "bmp280",
-    "gps",
-    "lora",
-    "imu"
+    "rocketry"
   ],
-  "frameworks": ["arduino"],
   "build": {
     "srcDir": ".",
     "includeDir": ".",
     "flags": [
-      "-std=c++20",
-      "-DUSST_PLATFORM_ARDUINO"
+      "-std=gnu++20",
+      "-D USST_PLATFORM_ARDUINO",
+      "-D _TASK_HEADER_AND_CPP"
     ],
     "srcFilter": [
       "+<*.cpp>",
@@ -37,14 +32,44 @@
     ]
   },
   "dependencies": [
-    { "name": "SPI" },
-    { "name": "RadioHead" },
-    { "owner": "adafruit", "name": "Adafruit BMP280 Library" },
-    { "owner": "adafruit", "name": "Adafruit BusIO" },
-    { "owner": "adafruit", "name": "Adafruit GPS Library" },
-    { "owner": "adafruit", "name": "Adafruit LIS3MDL" },
-    { "owner": "adafruit", "name": "Adafruit LSM6DS" },
-    { "owner": "adafruit", "name": "Adafruit MCP9808 Library" },
-    { "owner": "adafruit", "name": "Adafruit Unified Sensor" }
+    {
+      "name": "SPI"
+    },
+    {
+      "name": "RadioHead"
+    },
+    {
+      "owner": "arkhipenko",
+      "name": "TaskScheduler",
+      "version": "^3.8.5"
+    },
+    {
+      "owner": "adafruit",
+      "name": "Adafruit BMP280 Library"
+    },
+    {
+      "owner": "adafruit",
+      "name": "Adafruit BusIO"
+    },
+    {
+      "owner": "adafruit",
+      "name": "Adafruit GPS Library"
+    },
+    {
+      "owner": "adafruit",
+      "name": "Adafruit LIS3MDL"
+    },
+    {
+      "owner": "adafruit",
+      "name": "Adafruit LSM6DS"
+    },
+    {
+      "owner": "adafruit",
+      "name": "Adafruit MCP9808 Library"
+    },
+    {
+      "owner": "adafruit",
+      "name": "Adafruit Unified Sensor"
+    }
   ]
 }
