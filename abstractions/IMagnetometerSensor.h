@@ -3,6 +3,8 @@
 #include "abstractions/ISensor.h"
 #include "types.h"
 
+namespace HAL {
+
 /**
  * @brief Abstract interface for magnetometer sensor implementations.
  */
@@ -13,7 +15,9 @@ public:
 
     /**
      * @brief Read sensor data.
-     * @return Pointer to MagnetometerData structure.
+     * @return Reference to MagnetometerData structure.
      */
-    virtual MagnetometerData* read() = 0;
+    virtual const MagnetometerData& read() = 0;
 };
+
+} // namespace HAL

@@ -1,7 +1,8 @@
 #pragma once
 #include <list>
 
-
+namespace HAL
+{
 enum ErrorCodes{
     NOERR = 0,
     INIT_BMP_ERR = 1,
@@ -35,7 +36,4 @@ private:
     void UpdateLights();
     bool HasErrors();
 };
-
-
-
-
+}

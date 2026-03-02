@@ -8,10 +8,10 @@
 namespace HAL {
 
 // Placeholder Arduino SD Filesystem implementation
-class ArduinoSDFileSystem : public IFileSystem {
+class SDFileSystem : public IFileSystem {
 public:
-    ArduinoSDFileSystem() = default;
-    ~ArduinoSDFileSystem() override = default;
+    SDFileSystem() = default;
+    ~SDFileSystem() override = default;
 
     IFile* OpenFile(const char*, const char* = "w") override { return nullptr; }
     Result RemoveFile(const char*) override { return Result::Fail; }

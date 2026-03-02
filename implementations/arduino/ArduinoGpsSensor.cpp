@@ -16,33 +16,34 @@
 // Static instance of Adafruit_GPS
 static Adafruit_GPS gps(&HW_SERIAL(1)); // Default to Serial1
 
-ArduinoGpsSensor::ArduinoGpsSensor(uint8_t serial_port, uint32_t baud_rate)
-    : serial_port(serial_port), baud_rate(baud_rate), status(0)
+namespace HAL {
+
+GpsSensor::GpsSensor(uint8_t serial_port, uint32_t baud_rate)
+    : serial_port(serial_port), baud_rate(baud_rate), status(SensorStatus::Failure)
 {
 }
 
-ArduinoGpsSensor::~ArduinoGpsSensor() {}
+GpsSensor::~GpsSensor() {}
 
-uint8_t ArduinoGpsSensor::begin()
+SensorStatus GpsSensor::begin()
 {
     if (gps.begin(baud_rate)) {
         gps.sendCommand(PMTK_SET_NMEA_OUTPUT_RMCGGA);   // Output RMC and GGA sentences
         gps.sendCommand(PMTK_SET_NMEA_UPDATE_1HZ);     // Update every 1 second
         gps.sendCommand(PGCMD_ANTENNA);                // Request antenna status
-        status = 1;
-        return status;
+        status = SensorStatus::Success;
     } else {
-        status = 0;
-        return status;
+        status = SensorStatus::Failure;
     }
+    return status;
 }
 
-uint8_t ArduinoGpsSensor::getStatus() const
+SensorStatus GpsSensor::getStatus() const
 {
     return status;
 }
 
-void ArduinoGpsSensor::configure(uint32_t update_rate_ms, const char* output_mode)
+void GpsSensor::configure(uint32_t update_rate_ms, const char* output_mode)
 {
     // Set NMEA output format (e.g., RMC only, RMC+GGA, etc.)
     if (output_mode != nullptr) {
@@ -59,7 +60,7 @@ void ArduinoGpsSensor::configure(uint32_t update_rate_ms, const char* output_mod
     }
 }
 
-void ArduinoGpsSensor::update()
+void GpsSensor::update()
 {
     // Update GPS data
     char c = gps.read();
@@ -70,7 +71,7 @@ void ArduinoGpsSensor::update()
     }
 }
 
-GPSData* ArduinoGpsSensor::read()
+const GPSData& GpsSensor::read()
 {
     if (hasFix()) {
         data.latitude = gps.latitudeDegrees;
@@ -90,15 +91,17 @@ GPSData* ArduinoGpsSensor::read()
         data.fix_quality = 0;
     }
 
-    return &data;
+    return data;
 }
 
-bool ArduinoGpsSensor::hasFix()
+bool GpsSensor::hasFix()
 {
     return (gps.fix > 0) && (gps.fixquality > 0);
 }
 
-void ArduinoGpsSensor::sendCommand(const char* command)
+void GpsSensor::sendCommand(const char* command)
 {
     gps.sendCommand(command);
 }
+
+} // namespace HAL

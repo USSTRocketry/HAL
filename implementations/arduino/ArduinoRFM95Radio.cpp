@@ -20,12 +20,14 @@ RHGenericSPI* getSPIInstance(uint8_t spiIndex) {
     return &hardware_spi; // Default to SPI0
 }
 
-ArduinoRFM95Radio::ArduinoRFM95Radio(uint8_t csPin, uint8_t intPin, uint8_t spiIndex, float frequency)
+namespace HAL {
+
+RFM95Radio::RFM95Radio(uint8_t csPin, uint8_t intPin, uint8_t spiIndex, float frequency)
     : csPin(csPin), intPin(intPin), spiIndex(spiIndex), frequency(frequency)
 {
 }
 
-bool ArduinoRFM95Radio::begin()
+bool RFM95Radio::begin()
 {
     rf95_instance = new RH_RF95(csPin, intPin, *getSPIInstance(spiIndex));
     
@@ -38,7 +40,7 @@ bool ArduinoRFM95Radio::begin()
     return true;
 }
 
-void ArduinoRFM95Radio::reset(uint8_t resetPin)
+void RFM95Radio::reset(uint8_t resetPin)
 {
     if (resetPin != 127) { // 127 is a sentinel value for "non-existent pin"
         pinMode(resetPin, OUTPUT);
@@ -49,19 +51,19 @@ void ArduinoRFM95Radio::reset(uint8_t resetPin)
     }
 }
 
-bool ArduinoRFM95Radio::send(const uint8_t* data, size_t length)
+bool RFM95Radio::send(std::span<const uint8_t> data)
 {
     if (!rf95_instance) return false;
-    return rf95_instance->send(data, length) && rf95_instance->waitPacketSent();
+    return rf95_instance->send(data.data(), data.size()) && rf95_instance->waitPacketSent();
 }
 
-bool ArduinoRFM95Radio::receive(uint8_t* buffer, size_t maxLength, size_t& receivedLength)
+bool RFM95Radio::receive(std::span<uint8_t> buffer, size_t& receivedLength)
 {
     if (!rf95_instance) return false;
     
     if (rf95_instance->available()) {
-        uint8_t len = maxLength;
-        if (rf95_instance->recv(buffer, &len)) {
+        uint8_t len = static_cast<uint8_t>(buffer.size());
+        if (rf95_instance->recv(buffer.data(), &len)) {
             receivedLength = len;
             return true;
         }
@@ -69,7 +71,7 @@ bool ArduinoRFM95Radio::receive(uint8_t* buffer, size_t maxLength, size_t& recei
     return false;
 }
 
-void ArduinoRFM95Radio::setFrequency(float frequency)
+void RFM95Radio::setFrequency(float frequency)
 {
     this->frequency = frequency;
     if (rf95_instance) {
@@ -77,14 +79,14 @@ void ArduinoRFM95Radio::setFrequency(float frequency)
     }
 }
 
-void ArduinoRFM95Radio::setTxPower(uint8_t power)
+void RFM95Radio::setTxPower(uint8_t power)
 {
     if (rf95_instance) {
         rf95_instance->setTxPower(power, false);
     }
 }
 
-void ArduinoRFM95Radio::configureLoRa(uint8_t spreadingFactor, uint16_t bandwidth, uint8_t codingRate)
+void RFM95Radio::configureLoRa(uint8_t spreadingFactor, uint16_t bandwidth, uint8_t codingRate)
 {
     // The RadioHead library does not provide direct access to these settings,
     // but they are typically configured at the register level in RH_RF95.
@@ -93,7 +95,7 @@ void ArduinoRFM95Radio::configureLoRa(uint8_t spreadingFactor, uint16_t bandwidt
     // rf95_instance->spiWrite(RH_RF95_REG_1E_MODEM_CONFIG2, (spreadingFactor << 4) | 0x04);
 }
 
-void ArduinoRFM95Radio::setAddress(const uint8_t address)
+void RFM95Radio::setAddress(const uint8_t address)
 {
     if (rf95_instance) {
         rf95_instance->setThisAddress(address);
@@ -101,18 +103,20 @@ void ArduinoRFM95Radio::setAddress(const uint8_t address)
     }
 }
 
-void ArduinoRFM95Radio::setDestinationAddress(const uint8_t address)
+void RFM95Radio::setDestinationAddress(const uint8_t address)
 {
     if (rf95_instance) {
         rf95_instance->setHeaderTo(address);
     }
 }
 
-void ArduinoRFM95Radio::setPromiscuousMode(bool enable)
+void RFM95Radio::setPromiscuousMode(bool enable)
 {
     if (rf95_instance) {
         rf95_instance->setPromiscuous(enable);
     }
 }
 
-void* native_handle() { return rf95_instance; }
+void* RFM95Radio::native_handle() { return rf95_instance; }
+
+} // namespace HAL

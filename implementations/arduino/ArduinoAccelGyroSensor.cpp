@@ -11,42 +11,46 @@
 #define SENSOR_MODE_I2C 0
 #define SENSOR_MODE_SPI 1
 
+namespace HAL {
+
 // Static instance of Adafruit_LSM6DSOX
 static Adafruit_LSM6DSOX lsm6dsox;
 static sensors_event_t accel;
 static sensors_event_t gyro;
 static sensors_event_t temp;
 
-ArduinoAccelGyroSensor::ArduinoAccelGyroSensor(uint8_t i2c_addr, uint8_t i2c_wire)
-    : i2c_addr(i2c_addr), i2c_wire(i2c_wire), sensor_mode(SENSOR_MODE_I2C), status(0)
+AccelGyroSensor::AccelGyroSensor(uint8_t i2c_addr, uint8_t i2c_wire)
+    : i2c_addr(i2c_addr), i2c_wire(i2c_wire), sensor_mode(SENSOR_MODE_I2C), status(SensorStatus::Failure)
 {
 }
 
-ArduinoAccelGyroSensor::ArduinoAccelGyroSensor(uint8_t cs, uint8_t miso, uint8_t mosi, uint8_t sck)
-    : spi_cs(cs), spi_miso(miso), spi_mosi(mosi), spi_sck(sck), sensor_mode(SENSOR_MODE_SPI), status(0)
+AccelGyroSensor::AccelGyroSensor(uint8_t cs, uint8_t miso, uint8_t mosi, uint8_t sck)
+    : spi_cs(cs), spi_miso(miso), spi_mosi(mosi), spi_sck(sck), sensor_mode(SENSOR_MODE_SPI), status(SensorStatus::Failure)
 {
 }
 
-ArduinoAccelGyroSensor::~ArduinoAccelGyroSensor() {}
+AccelGyroSensor::~AccelGyroSensor() {}
 
-uint8_t ArduinoAccelGyroSensor::begin()
+SensorStatus AccelGyroSensor::begin()
 {
+    bool initSuccess = false;
     if (sensor_mode == SENSOR_MODE_I2C) {
         // Note: LSM6DS_I2CADDR_DEFAULT is typically 0x6A
-        status = lsm6dsox.begin_I2C(i2c_addr, &MAP_I2C_WIRE(i2c_wire), 0);
+        initSuccess = lsm6dsox.begin_I2C(i2c_addr, &MAP_I2C_WIRE(i2c_wire), 0);
     } else {
-        status = lsm6dsox.begin_SPI(spi_cs, spi_sck, spi_miso, spi_mosi);
+        initSuccess = lsm6dsox.begin_SPI(spi_cs, spi_sck, spi_miso, spi_mosi);
     }
 
+    status = initSuccess ? SensorStatus::Success : SensorStatus::Failure;
     return status;
 }
 
-uint8_t ArduinoAccelGyroSensor::getStatus() const
+SensorStatus AccelGyroSensor::getStatus() const
 {
     return status;
 }
 
-AccelGyroData* ArduinoAccelGyroSensor::read()
+const AccelGyroData& AccelGyroSensor::read()
 {
     lsm6dsox.getEvent(&accel, &gyro, &temp);
     data.temperature = temp.temperature;
@@ -56,5 +60,7 @@ AccelGyroData* ArduinoAccelGyroSensor::read()
     data.gyroX = gyro.gyro.x;
     data.gyroY = gyro.gyro.y;
     data.gyroZ = gyro.gyro.z;
-    return &data;
+    return data;
 }
+
+} // namespace HAL

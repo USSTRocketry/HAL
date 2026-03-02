@@ -3,6 +3,8 @@
 #include "abstractions/ISensor.h"
 #include "types.h"
 
+namespace HAL {
+
 /**
  * @brief Abstract interface for GPS sensor implementations.
  */
@@ -13,7 +15,9 @@ public:
 
     /**
      * @brief Read sensor data.
-     * @return Pointer to GPSData structure.
+     * @return Reference to GPSData structure.
      */
-    virtual GPSData* read() = 0;
+    virtual const GPSData& read() = 0;
 };
+
+} // namespace HAL

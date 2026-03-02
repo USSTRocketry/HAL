@@ -4,7 +4,7 @@
 
 namespace HAL {
 
-MockFile::MockFile(const std::string& path, const char* mode)
+File::File(const std::string& path, const char* mode)
     : path_(path), size_(0) {
     std::ios_base::openmode flags = std::ios::binary;
 
@@ -24,11 +24,11 @@ MockFile::MockFile(const std::string& path, const char* mode)
     }
 }
 
-MockFile::~MockFile() {
+File::~File() {
     Close();
 }
 
-Result MockFile::Write(std::span<const std::byte> data) {
+Result File::Write(std::span<const std::byte> data) {
     if (!file_.is_open()) {
         return Result::Fail;
     }
@@ -42,7 +42,7 @@ Result MockFile::Write(std::span<const std::byte> data) {
     return Result::Success;
 }
 
-Result MockFile::Flush() {
+Result File::Flush() {
     if (!file_.is_open()) {
         return Result::Fail;
     }
@@ -50,7 +50,7 @@ Result MockFile::Flush() {
     return file_.fail() ? Result::Fail : Result::Success;
 }
 
-Result MockFile::Read(std::span<std::byte> buffer, size_t& bytesRead) {
+Result File::Read(std::span<std::byte> buffer, size_t& bytesRead) {
     if (!file_.is_open()) {
         bytesRead = 0;
         return Result::Fail;
@@ -71,7 +71,7 @@ Result MockFile::Read(std::span<std::byte> buffer, size_t& bytesRead) {
     return bytesRead > 0 ? Result::Success : Result::Fail;
 }
 
-Result MockFile::Seek(size_t pos) {
+Result File::Seek(size_t pos) {
     if (!file_.is_open()) {
         return Result::Fail;
     }
@@ -80,28 +80,28 @@ Result MockFile::Seek(size_t pos) {
     return file_.fail() ? Result::Fail : Result::Success;
 }
 
-size_t MockFile::Tell() const {
+size_t File::Tell() const {
     if (!file_.is_open()) {
         return 0;
     }
     return const_cast<std::fstream&>(file_).tellg();
 }
 
-size_t MockFile::Size() const {
+size_t File::Size() const {
     return size_;
 }
 
-bool MockFile::IsOpen() const {
+bool File::IsOpen() const {
     return file_.is_open();
 }
 
-void MockFile::Close() {
+void File::Close() {
     if (file_.is_open()) {
         file_.close();
     }
 }
 
-void MockFile::UpdateSize() {
+void File::UpdateSize() {
     if (std::filesystem::exists(path_)) {
         size_ = std::filesystem::file_size(path_);
     }

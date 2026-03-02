@@ -3,21 +3,21 @@
 
 namespace HAL {
 
-MockFileSystem::MockFileSystem(const std::string& basePath)
+FileSystem::FileSystem(const std::string& basePath)
     : basePath_(basePath) {}
 
-MockFileSystem::~MockFileSystem() {
+FileSystem::~FileSystem() {
     openFiles_.clear();
 }
 
-bool MockFileSystem::Initialize() {
+bool FileSystem::Initialize() {
     if (!std::filesystem::exists(basePath_)) {
         return std::filesystem::create_directories(basePath_);
     }
     return true;
 }
 
-IFile* MockFileSystem::OpenFile(const char* path, const char* mode) {
+IFile* FileSystem::OpenFile(const char* path, const char* mode) {
     std::string fullPath = GetFullPath(path);
 
     auto it = openFiles_.find(path);
@@ -30,7 +30,7 @@ IFile* MockFileSystem::OpenFile(const char* path, const char* mode) {
         std::filesystem::create_directories(filePath.parent_path());
     }
 
-    auto file = std::make_unique<MockFile>(fullPath, mode);
+    auto file = std::make_unique<File>(fullPath, mode);
     if (!file->IsOpen()) {
         return nullptr;
     }
@@ -40,7 +40,7 @@ IFile* MockFileSystem::OpenFile(const char* path, const char* mode) {
     return filePtr;
 }
 
-Result MockFileSystem::RemoveFile(const char* path) {
+Result FileSystem::RemoveFile(const char* path) {
     std::string fullPath = GetFullPath(path);
 
     auto it = openFiles_.find(path);
@@ -53,11 +53,11 @@ Result MockFileSystem::RemoveFile(const char* path) {
     return removed ? Result::Success : Result::Fail;
 }
 
-bool MockFileSystem::Exists(const char* path) {
+bool FileSystem::Exists(const char* path) {
     return std::filesystem::exists(GetFullPath(path));
 }
 
-std::vector<std::string> MockFileSystem::ListFiles(const char* dir) {
+std::vector<std::string> FileSystem::ListFiles(const char* dir) {
     std::vector<std::string> files;
     std::string fullPath = GetFullPath(dir);
 
@@ -75,7 +75,7 @@ std::vector<std::string> MockFileSystem::ListFiles(const char* dir) {
     return files;
 }
 
-std::string MockFileSystem::GetFullPath(const char* path) {
+std::string FileSystem::GetFullPath(const char* path) {
     std::filesystem::path fullPath(basePath_);
     std::string pathStr(path);
     if (!pathStr.empty() && pathStr[0] == '/') {

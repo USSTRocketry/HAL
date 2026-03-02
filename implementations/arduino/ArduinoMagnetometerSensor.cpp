@@ -11,47 +11,53 @@
 #define SENSOR_MODE_I2C 0
 #define SENSOR_MODE_SPI 1
 
+namespace HAL {
+
 // Static instance of Adafruit_LIS3MDL
 static Adafruit_LIS3MDL lis3mdl;
 static sensors_event_t mag_event;
 
-ArduinoMagnetometerSensor::ArduinoMagnetometerSensor(uint8_t i2c_addr, uint8_t i2c_wire)
-    : i2c_addr(i2c_addr), i2c_wire(i2c_wire), sensor_mode(SENSOR_MODE_I2C), status(0)
+MagnetometerSensor::MagnetometerSensor(uint8_t i2c_addr, uint8_t i2c_wire)
+    : i2c_addr(i2c_addr), i2c_wire(i2c_wire), sensor_mode(SENSOR_MODE_I2C), status(SensorStatus::Failure)
 {
 }
 
-ArduinoMagnetometerSensor::ArduinoMagnetometerSensor(uint8_t cs, uint8_t miso, uint8_t mosi, uint8_t sck)
-    : spi_cs(cs), spi_miso(miso), spi_mosi(mosi), spi_sck(sck), sensor_mode(SENSOR_MODE_SPI), status(0)
+MagnetometerSensor::MagnetometerSensor(uint8_t cs, uint8_t miso, uint8_t mosi, uint8_t sck)
+    : spi_cs(cs), spi_miso(miso), spi_mosi(mosi), spi_sck(sck), sensor_mode(SENSOR_MODE_SPI), status(SensorStatus::Failure)
 {
 }
 
-ArduinoMagnetometerSensor::~ArduinoMagnetometerSensor() {}
+MagnetometerSensor::~MagnetometerSensor() {}
 
-uint8_t ArduinoMagnetometerSensor::begin()
+SensorStatus MagnetometerSensor::begin()
 {
+    bool initSuccess = false;
     if (sensor_mode == SENSOR_MODE_I2C) {
-        status = lis3mdl.begin_I2C(i2c_addr, &MAP_I2C_WIRE(i2c_wire));
+        initSuccess = lis3mdl.begin_I2C(i2c_addr, &MAP_I2C_WIRE(i2c_wire));
     } else {
-        status = lis3mdl.begin_SPI(spi_cs, spi_sck, spi_miso, spi_mosi);
+        initSuccess = lis3mdl.begin_SPI(spi_cs, spi_sck, spi_miso, spi_mosi);
     }
 
-    if (status) {
+    if (initSuccess) {
         // Configure LIS3MDL with default settings or custom settings.
         lis3mdl.setPerformanceMode(LIS3MDL_MEDIUMMODE);
         lis3mdl.setOperationMode(LIS3MDL_CONTINUOUSMODE);
         lis3mdl.setDataRate(LIS3MDL_DATARATE_155_HZ);
         lis3mdl.setRange(LIS3MDL_RANGE_4_GAUSS);
+        status = SensorStatus::Success;
+    } else {
+        status = SensorStatus::Failure;
     }
 
     return status;
 }
 
-uint8_t ArduinoMagnetometerSensor::getStatus() const
+SensorStatus MagnetometerSensor::getStatus() const
 {
     return status;
 }
 
-MagnetometerData* ArduinoMagnetometerSensor::read()
+const MagnetometerData& MagnetometerSensor::read()
 {
     lis3mdl.getEvent(&mag_event);
 
@@ -59,5 +65,7 @@ MagnetometerData* ArduinoMagnetometerSensor::read()
     data.magneticY = mag_event.magnetic.y;
     data.magneticZ = mag_event.magnetic.z;
 
-    return &data;
+    return data;
 }
+
+} // namespace HAL

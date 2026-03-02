@@ -28,17 +28,6 @@
     #include "implementations/arduino/ArduinoRFM95Radio.h"
     #include "implementations/arduino/ArduinoRYLR998Radio.h"
     #include "DebugLights.h"
-    
-    // Type aliases for easy use
-    namespace HAL {
-        using Bmp280Sensor = ArduinoBmp280Sensor;
-        using AccelGyroSensor = ArduinoAccelGyroSensor;
-        using MagnetometerSensor = ArduinoMagnetometerSensor;
-        using TemperatureSensor = ArduinoTemperatureSensor;
-        using GpsSensor = ArduinoGpsSensor;
-        using RFM95Radio = ArduinoRFM95Radio;
-        using RYLR998Radio = ArduinoRYLR998Radio;
-    }
 
 #elif defined(USST_PLATFORM_STM32)
     // STM32 implementations
@@ -49,17 +38,6 @@
     #include "implementations/stm32/STM32GpsSensor.h"
     #include "implementations/stm32/STM32RFM95Radio.h"
     #include "implementations/stm32/STM32RYLR998Radio.h"
-    
-    // Type aliases for easy use
-    namespace HAL {
-        using Bmp280Sensor = STM32Bmp280Sensor;
-        using AccelGyroSensor = STM32AccelGyroSensor;
-        using MagnetometerSensor = STM32MagnetometerSensor;
-        using TemperatureSensor = STM32TemperatureSensor;
-        using GpsSensor = STM32GpsSensor;
-        using RFM95Radio = STM32RFM95Radio;
-        using RYLR998Radio = STM32RYLR998Radio;
-    }
 
 
 #elif defined(USST_PLATFORM_MOCK)
@@ -69,16 +47,6 @@
     #include "implementations/mock/MockMagnetometerSensor.h"
     #include "implementations/mock/MockTemperatureSensor.h"
     #include "implementations/mock/MockGpsSensor.h"
-    
-    // Type aliases for easy use
-    namespace HAL {
-        using Bmp280Sensor = MockBmp280Sensor;
-        using AccelGyroSensor = MockAccelGyroSensor;
-        using MagnetometerSensor = MockMagnetometerSensor;
-        using TemperatureSensor = MockTemperatureSensor;
-        using GpsSensor = MockGpsSensor;
-        // No mock radios yet - to be added
-    }
 
 #else
     #error "No USST_PLATFORM defined! Set USST_PLATFORM in CMakeLists.txt to: ARDUINO, STM32, or MOCK"

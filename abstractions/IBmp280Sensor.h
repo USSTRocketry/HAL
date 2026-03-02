@@ -3,6 +3,8 @@
 #include "abstractions/ISensor.h"
 #include "types.h"
 
+namespace HAL {
+
 /**
  * @brief Abstract interface for BMP280 barometric sensor implementations.
  */
@@ -13,7 +15,9 @@ public:
 
     /**
      * @brief Read sensor data.
-     * @return Pointer to BMP280Data structure.
+     * @return Reference to BMP280Data structure.
      */
-    virtual BMP280Data* read() = 0;
+    virtual const BMP280Data& read() = 0;
 };
+
+} // namespace HAL

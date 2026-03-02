@@ -2,6 +2,8 @@
 
 #include <cstdint>
 
+namespace HAL {
+
 // Hardware serial identifiers
 constexpr uint8_t HW_SERIAL1 = 1;  // Serial1 (RX = 0, TX = 1)
 constexpr uint8_t HW_SERIAL2 = 2;  // Serial2 (RX = 7, TX = 8)
@@ -57,3 +59,5 @@ constexpr uint8_t RADIO2_TX        = 34;
 constexpr uint8_t RADIO2_RX        = 35;
 constexpr uint8_t RADIO2_RST       = 36;
 constexpr uint8_t RYLR998_HW_SERIAL = 8;  // Using TX8 and RX8
+
+} // namespace HAL

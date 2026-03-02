@@ -3,6 +3,8 @@
 #include "abstractions/ISensor.h"
 #include "types.h"
 
+namespace HAL {
+
 /**
  * @brief Abstract interface for temperature sensor implementations.
  */
@@ -13,7 +15,9 @@ public:
 
     /**
      * @brief Read sensor data.
-     * @return Pointer to TemperatureData structure.
+     * @return Reference to TemperatureData structure.
      */
-    virtual TemperatureData* read() = 0;
+    virtual const TemperatureData& read() = 0;
 };
+
+} // namespace HAL

@@ -1,15 +1,23 @@
 #pragma once
 #include <cstdint>
 
-typedef struct _bmp280Data
-{
+namespace HAL {
+
+/**
+ * @brief Status enum for sensor initialization and operations
+ */
+enum class SensorStatus : uint8_t {
+    Failure = 0,
+    Success = 1
+};
+
+struct BMP280Data {
     float temperature;
     float pressure;
     float altitude;
-} BMP280Data;
+};
 
-typedef struct _accelGyroData
-{
+struct AccelGyroData {
     float temperature;
     float accelX;
     float accelY;
@@ -17,21 +25,19 @@ typedef struct _accelGyroData
     float gyroX;
     float gyroY;
     float gyroZ;
-} AccelGyroData;
+};
 
-typedef struct _magnetometerData
-{
+struct MagnetometerData {
     float magneticX;
     float magneticY;
     float magneticZ;
-} MagnetometerData;
+};
 
-typedef struct _temperatureData
-{
+struct TemperatureData {
     float temperature;
-} TemperatureData;
+};
 
-typedef struct {
+struct GPSData {
     float latitude;
     float longitude;
     float altitude;
@@ -39,5 +45,7 @@ typedef struct {
     float angle;       // course over ground
     uint8_t satellites;
     uint8_t fix_quality;  // GPS signal quality
-} GPSData;
+};
+
+} // namespace HAL
 

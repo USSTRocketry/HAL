@@ -6,10 +6,10 @@
 
 namespace HAL {
 
-class MockFile : public IFile {
+class File : public IFile {
 public:
-    MockFile(const std::string& path, const char* mode);
-    ~MockFile() override;
+    File(const std::string& path, const char* mode);
+    ~File() override;
     
     Result Write(std::span<const std::byte> data) override;
     Result Flush() override;

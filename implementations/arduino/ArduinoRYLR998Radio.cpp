@@ -15,19 +15,21 @@
 // Static instance of HardwareSerial
 static HardwareSerial* rylr998_serial = &Serial1;
 
-ArduinoRYLR998Radio::ArduinoRYLR998Radio(uint8_t serialPort, uint32_t baudRate)
+namespace HAL {
+
+RYLR998Radio::RYLR998Radio(uint8_t serialPort, uint32_t baudRate)
     : serialPort(serialPort), baudRate(baudRate)
 {
 }
 
-bool ArduinoRYLR998Radio::begin()
+bool RYLR998Radio::begin()
 {
     // Begin the chosen serial port with the configured baud rate
     rylr998_serial->begin(baudRate);
     return true;
 }
 
-void ArduinoRYLR998Radio::reset(uint8_t resetPin)
+void RYLR998Radio::reset(uint8_t resetPin)
 {
     if (resetPin != 127) { // 127 is a sentinel value for "non-existent pin"
         pinMode(resetPin, OUTPUT);
@@ -38,26 +40,26 @@ void ArduinoRYLR998Radio::reset(uint8_t resetPin)
     }
 }
 
-bool ArduinoRYLR998Radio::send(const uint8_t* data, size_t length)
+bool RYLR998Radio::send(std::span<const uint8_t> data)
 {
     // Send data using the selected hardware serial port
-    for (size_t i = 0; i < length; ++i) {
+    for (size_t i = 0; i < data.size(); ++i) {
         rylr998_serial->write(data[i]);
     }
     return true;
 }
 
-bool ArduinoRYLR998Radio::receive(uint8_t* buffer, size_t maxLength, size_t& receivedLength)
+bool RYLR998Radio::receive(std::span<uint8_t> buffer, size_t& receivedLength)
 {
     // Receive data using the selected hardware serial port
     receivedLength = 0;
-    while (rylr998_serial->available() && receivedLength < maxLength) {
+    while (rylr998_serial->available() && receivedLength < buffer.size()) {
         buffer[receivedLength++] = rylr998_serial->read();
     }
     return receivedLength > 0;
 }
 
-void ArduinoRYLR998Radio::setFrequency(float frequency)
+void RYLR998Radio::setFrequency(float frequency)
 {
     // Configure frequency via AT command
     rylr998_serial->print("AT+FREQ=");
@@ -65,7 +67,7 @@ void ArduinoRYLR998Radio::setFrequency(float frequency)
     rylr998_serial->print("\r\n");
 }
 
-void ArduinoRYLR998Radio::setTxPower(uint8_t power)
+void RYLR998Radio::setTxPower(uint8_t power)
 {
     // Configure TX power via AT command
     rylr998_serial->print("AT+POWER=");
@@ -73,7 +75,7 @@ void ArduinoRYLR998Radio::setTxPower(uint8_t power)
     rylr998_serial->print("\r\n");
 }
 
-void ArduinoRYLR998Radio::configureLoRa(uint8_t spreadingFactor, uint16_t bandwidth, uint8_t codingRate)
+void RYLR998Radio::configureLoRa(uint8_t spreadingFactor, uint16_t bandwidth, uint8_t codingRate)
 {
     // Configure LoRa parameters (if supported by RYLR998)
     // Note: RYLR998 may not expose direct access to SF, BW, CR through commands.
@@ -86,7 +88,7 @@ void ArduinoRYLR998Radio::configureLoRa(uint8_t spreadingFactor, uint16_t bandwi
     rylr998_serial->print("\r\n");
 }
 
-void ArduinoRYLR998Radio::setAddress(const uint8_t address)
+void RYLR998Radio::setAddress(const uint8_t address)
 {
     // Configure address via AT command
     rylr998_serial->print("AT+ADDR=");
@@ -94,7 +96,7 @@ void ArduinoRYLR998Radio::setAddress(const uint8_t address)
     rylr998_serial->print("\r\n");
 }
 
-void ArduinoRYLR998Radio::setDestinationAddress(const uint8_t address)
+void RYLR998Radio::setDestinationAddress(const uint8_t address)
 {
     // Set destination address for communication
     rylr998_serial->print("AT+DEST=");
@@ -102,7 +104,7 @@ void ArduinoRYLR998Radio::setDestinationAddress(const uint8_t address)
     rylr998_serial->print("\r\n");
 }
 
-void ArduinoRYLR998Radio::setPromiscuousMode(bool enable)
+void RYLR998Radio::setPromiscuousMode(bool enable)
 {
     // Configure promiscuous mode if supported
     rylr998_serial->print("AT+PROMISC=");
@@ -110,4 +112,6 @@ void ArduinoRYLR998Radio::setPromiscuousMode(bool enable)
     rylr998_serial->print("\r\n");
 }
 
-void* native_handle() { return rylr998_serial; }
+void* RYLR998Radio::native_handle() { return rylr998_serial; }
+
+} // namespace HAL

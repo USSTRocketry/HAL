@@ -1,4 +1,4 @@
-#include "WorkQueue.h"
+#include "abstractions/WorkQueue.h"
 #include <cassert>
 
 // teensy41 only has a single core, so no mutex needed for now ...

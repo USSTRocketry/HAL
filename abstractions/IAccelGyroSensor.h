@@ -3,6 +3,8 @@
 #include "abstractions/ISensor.h"
 #include "types.h"
 
+namespace HAL {
+
 /**
  * @brief Abstract interface for accelerometer/gyroscope sensor implementations.
  */
@@ -13,7 +15,9 @@ public:
 
     /**
      * @brief Read sensor data.
-     * @return Pointer to AccelGyroData structure.
+     * @return Reference to AccelGyroData structure.
      */
-    virtual AccelGyroData* read() = 0;
+    virtual const AccelGyroData& read() = 0;
 };
+
+} // namespace HAL

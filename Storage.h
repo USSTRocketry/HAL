@@ -93,10 +93,10 @@ private:
     Storage()
     {
 #if defined(USST_PLATFORM_MOCK)
-    fileSystem_ = std::make_unique<MockFileSystem>("./data");
+    fileSystem_ = std::make_unique<FileSystem>("./data");
 #elif defined(USST_PLATFORM_ARDUINO)
     // Placeholder Arduino SD filesystem
-    fileSystem_ = std::make_unique<ArduinoSDFileSystem>();
+    fileSystem_ = std::make_unique<SDFileSystem>();
 #endif
     }
 

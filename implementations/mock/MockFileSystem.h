@@ -7,10 +7,10 @@
 
 namespace HAL {
 
-class MockFileSystem : public IFileSystem {
+class FileSystem : public IFileSystem {
 public:
-    explicit MockFileSystem(const std::string& basePath = "./data");
-    ~MockFileSystem() override;
+    explicit FileSystem(const std::string& basePath = "./data");
+    ~FileSystem() override;
 
     IFile* OpenFile(const char* path, const char* mode = "w") override;
     Result RemoveFile(const char* path) override;
@@ -20,7 +20,7 @@ public:
 
 private:
     std::string basePath_;
-    std::unordered_map<std::string, std::unique_ptr<MockFile>> openFiles_;
+    std::unordered_map<std::string, std::unique_ptr<File>> openFiles_;
 
     std::string GetFullPath(const char* path);
 };

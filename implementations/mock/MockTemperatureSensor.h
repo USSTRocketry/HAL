@@ -4,42 +4,46 @@
 #include "types.h"
 #include <cstdint>
 
-class MockTemperatureSensor : public ITemperatureSensor
+namespace HAL {
+
+class TemperatureSensor : public ITemperatureSensor
 {
 private:
     TemperatureData data;
-    uint8_t status;
+    SensorStatus status;
 
 public:
-    MockTemperatureSensor(uint8_t /*i2c_addr*/ = 0x18, uint8_t /*i2c_wire*/ = 0)
-        : status(1), data{20.5f}
+    TemperatureSensor(uint8_t /*i2c_addr*/ = 0x18, uint8_t /*i2c_wire*/ = 0)
+        : status(SensorStatus::Success), data{20.5f}
     {
     }
 
-    virtual ~MockTemperatureSensor() = default;
+    virtual ~TemperatureSensor() = default;
 
-    uint8_t begin() override
-    {
-        return status;
-    }
-
-    uint8_t getStatus() const override
+    SensorStatus begin() override
     {
         return status;
     }
 
-    TemperatureData* read() override
+    SensorStatus getStatus() const override
     {
-        return &data;
+        return status;
     }
 
-    void setMockData(float temperature)
+    const TemperatureData& read() override
+    {
+        return data;
+    }
+
+    void setData(float temperature)
     {
         data.temperature = temperature;
     }
 
-    void setStatus(uint8_t newStatus)
+    void setStatus(SensorStatus newStatus)
     {
         status = newStatus;
     }
 };
+
+} // namespace HAL

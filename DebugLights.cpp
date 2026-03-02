@@ -2,6 +2,8 @@
 #include <PINS.h>
 #include <Arduino.h>
 
+namespace HAL 
+{
 DebugLights::DebugLights(/* args */)
 {
 }
@@ -72,4 +74,5 @@ void DebugLights::WriteErrorCodeToLEDs(int ErrorCode){
     }else{
         digitalWrite(LED3,LOW);
     }
+}
 }

@@ -5,10 +5,10 @@
 namespace HAL {
 
 // Placeholder Arduino SD File implementation
-class ArduinoSDFile : public IFile {
+class SDFile : public IFile {
 public:
-    ArduinoSDFile() = default;
-    ~ArduinoSDFile() override = default;
+    SDFile() = default;
+    ~SDFile() override = default;
 
     Result Write(std::span<const std::byte>) override { return Result::Fail; }
     Result Flush() override { return Result::Fail; }

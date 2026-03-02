@@ -8,11 +8,13 @@
 #include <fstream>
 #include <sstream>
 
-class MockBmp280Sensor : public IBmp280Sensor
+namespace HAL {
+
+class Bmp280Sensor : public IBmp280Sensor
 {
 private:
     BMP280Data data;
-    uint8_t status;
+    SensorStatus status;
     
     struct DataPoint {
         float timestamp;
@@ -28,35 +30,36 @@ private:
 
 public:
     // Match Arduino constructors (I2C and SPI)
-    MockBmp280Sensor(uint8_t i2c_addr = 0x77, uint8_t i2c_wire = 0, float /*sea_level_hpa*/ = 0.0f)
-        : status(1), data{20.5f, 101325.0f, 100.0f}
+    Bmp280Sensor(uint8_t i2c_addr = 0x77, uint8_t i2c_wire = 0, float /*sea_level_hpa*/ = 0.0f)
+        : status(SensorStatus::Success), data{20.5f, 101325.0f, 100.0f}
         , currentIndex_(0), useFlightData_(false), dataFilePath_("data/flight_bmp280.csv")
     {
     }
 
-    MockBmp280Sensor(uint8_t /*cs*/, uint8_t /*miso*/, uint8_t /*mosi*/, uint8_t /*sck*/, float /*sea_level_hpa*/ = 0.0f)
-        : status(0), data{20.5f, 101325.0f, 100.0f}
+    Bmp280Sensor(uint8_t /*cs*/, uint8_t /*miso*/, uint8_t /*mosi*/, uint8_t /*sck*/, float /*sea_level_hpa*/ = 0.0f)
+        : status(SensorStatus::Failure), data{20.5f, 101325.0f, 100.0f}
         , currentIndex_(0), useFlightData_(false), dataFilePath_("data/flight_bmp280.csv")
     {
     }
 
-    virtual ~MockBmp280Sensor() = default;
+    virtual ~Bmp280Sensor() = default;
 
-    uint8_t begin() override
+    SensorStatus begin() override
     {
-        // Autoload default flight data for simulation; ignore failures and keep defaults
+        // Autoload default flight data for simulation
         if (flightData_.empty()) {
-            this->status = loadFromFile(dataFilePath_.c_str());
+            const bool loaded = loadFromFile(dataFilePath_.c_str());
+            status = loaded ? SensorStatus::Success : SensorStatus::Failure;
         }
         return status;
     }
 
-    uint8_t getStatus() const override
+    SensorStatus getStatus() const override
     {
         return status;
     }
 
-    BMP280Data* read() override
+    const BMP280Data& read() override
     {
         if (currentIndex_ < flightData_.size()) {
             const auto& point = flightData_[currentIndex_];
@@ -64,7 +67,7 @@ public:
             data.pressure = point.pressure;
             data.altitude = point.altitude;
             currentIndex_++;
-            return &data;
+            return data;
         } else {
             // Hold last sample once data is exhausted
             if (!flightData_.empty()) {
@@ -75,10 +78,10 @@ public:
                 currentIndex_ = flightData_.size();
             }
         }
-        return &data;
+        return data;
     }
 
-    void setStatus(uint8_t newStatus)
+    void setStatus(SensorStatus newStatus)
     {
         status = newStatus;
     }
@@ -123,3 +126,5 @@ public:
         currentIndex_ = 0;
     }
 };
+
+} // namespace HAL

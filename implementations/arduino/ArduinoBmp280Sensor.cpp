@@ -13,51 +13,57 @@
 #define SENSOR_MODE_I2C 0
 #define SENSOR_MODE_SPI 1
 
+namespace HAL {
+
 // Static instance of Adafruit_BMP280 (note: this is a limitation of the current design)
 static Adafruit_BMP280 bmp;
 
-ArduinoBmp280Sensor::ArduinoBmp280Sensor(uint8_t i2c_addr, uint8_t i2c_wire, float sea_level_hpa)
+Bmp280Sensor::Bmp280Sensor(uint8_t i2c_addr, uint8_t i2c_wire, float sea_level_hpa)
     : i2c_addr(i2c_addr), i2c_wire(i2c_wire), sensor_mode(SENSOR_MODE_I2C), 
-      status(0), sea_level_hpa(sea_level_hpa)
+      status(SensorStatus::Failure), sea_level_hpa(sea_level_hpa)
 {
     bmp = Adafruit_BMP280(&MAP_I2C_WIRE(i2c_wire));
 }
 
-ArduinoBmp280Sensor::ArduinoBmp280Sensor(uint8_t cs, uint8_t miso, uint8_t mosi, uint8_t sck, float sea_level_hpa)
+Bmp280Sensor::Bmp280Sensor(uint8_t cs, uint8_t miso, uint8_t mosi, uint8_t sck, float sea_level_hpa)
     : spi_cs(cs), spi_miso(miso), spi_mosi(mosi), spi_sck(sck), sensor_mode(SENSOR_MODE_SPI),
-      status(0), sea_level_hpa(sea_level_hpa)
+      status(SensorStatus::Failure), sea_level_hpa(sea_level_hpa)
 {
     bmp = Adafruit_BMP280(cs, mosi, miso, sck);
 }
 
-ArduinoBmp280Sensor::~ArduinoBmp280Sensor() {}
+Bmp280Sensor::~Bmp280Sensor() {}
 
-uint8_t ArduinoBmp280Sensor::begin()
+SensorStatus Bmp280Sensor::begin()
 {
+    bool initSuccess = false;
     if (sensor_mode == SENSOR_MODE_I2C) {
-        status = bmp.begin(i2c_addr);
+        initSuccess = bmp.begin(i2c_addr);
     } else {
-        status = bmp.begin();
+        initSuccess = bmp.begin();
     }
 
-    if (status) {
+    if (initSuccess) {
         /* Default settings from datasheet. */
         bmp.setSampling(Adafruit_BMP280::MODE_NORMAL,     /* Operating Mode. */
                         Adafruit_BMP280::SAMPLING_X2,     /* Temp. oversampling */
                         Adafruit_BMP280::SAMPLING_X16,    /* Pressure oversampling */
                         Adafruit_BMP280::FILTER_X16,      /* Filtering. */
                         Adafruit_BMP280::STANDBY_MS_500); /* Standby time. */
+        status = SensorStatus::Success;
+    } else {
+        status = SensorStatus::Failure;
     }
 
     return status;
 }
 
-uint8_t ArduinoBmp280Sensor::getStatus() const
+SensorStatus Bmp280Sensor::getStatus() const
 {
     return status;
 }
 
-BMP280Data* ArduinoBmp280Sensor::read()
+const BMP280Data& Bmp280Sensor::read()
 {
     if (sea_level_hpa > 0.1f) { // 0.1 because... float...
         data.altitude = bmp.readAltitude(sea_level_hpa);
@@ -66,5 +72,7 @@ BMP280Data* ArduinoBmp280Sensor::read()
     }
     data.pressure = bmp.readPressure();
     data.temperature = bmp.readTemperature();
-    return &data;
+    return data;
 }
+
+} // namespace HAL

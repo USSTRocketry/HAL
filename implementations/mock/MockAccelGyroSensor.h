@@ -8,11 +8,13 @@
 #include <fstream>
 #include <sstream>
 
-class MockAccelGyroSensor : public IAccelGyroSensor
+namespace HAL {
+
+class AccelGyroSensor : public IAccelGyroSensor
 {
 private:
     AccelGyroData data;
-    uint8_t status;
+    SensorStatus status;
     
     struct DataPoint {
         float timestamp;
@@ -26,44 +28,45 @@ private:
 
 public:
     // Match Arduino constructors (I2C and SPI)
-    MockAccelGyroSensor(uint8_t /*i2c_addr*/ = 0x6A, uint8_t /*i2c_wire*/ = 0)
-        : status(1), data{20.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 9.81f}
+    AccelGyroSensor(uint8_t /*i2c_addr*/ = 0x6A, uint8_t /*i2c_wire*/ = 0)
+        : status(SensorStatus::Success), data{20.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 9.81f}
 #if defined(USST_PLATFORM_MOCK)
         , currentIndex_(0), useFlightData_(false), dataFilePath_("data/flight_accelgyro.csv")
 #endif
     {
     }
 
-    MockAccelGyroSensor(uint8_t /*cs*/, uint8_t /*miso*/, uint8_t /*mosi*/, uint8_t /*sck*/)
-        : status(1), data{20.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 9.81f}
+    AccelGyroSensor(uint8_t /*cs*/, uint8_t /*miso*/, uint8_t /*mosi*/, uint8_t /*sck*/)
+        : status(SensorStatus::Success), data{20.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 9.81f}
 #if defined(USST_PLATFORM_MOCK)
         , currentIndex_(0), useFlightData_(false), dataFilePath_("data/flight_accelgyro.csv")
 #endif
     {
     }
 
-    virtual ~MockAccelGyroSensor() = default;
+    virtual ~AccelGyroSensor() = default;
 
-    uint8_t begin() override
+    SensorStatus begin() override
     {
         if (flightData_.empty()) {
-            loadFromFile(dataFilePath_.c_str());
+            const bool loaded = loadFromFile(dataFilePath_.c_str());
+            status = loaded ? SensorStatus::Success : SensorStatus::Failure;
         }
         return status;
     }
 
-    uint8_t getStatus() const override
+    SensorStatus getStatus() const override
     {
         return status;
     }
 
-    AccelGyroData* read() override
+    const AccelGyroData& read() override
     {
         if (useFlightData_) {
             if (currentIndex_ < flightData_.size()) {
                 data = flightData_[currentIndex_].sensorData;
                 currentIndex_++;
-                return &data;
+                return data;
             } else {
                 if (!flightData_.empty()) {
                     data = flightData_.back().sensorData;
@@ -72,15 +75,15 @@ public:
                 useFlightData_ = false;
             }
         }
-        return &data;
+        return data;
     }
 
-    void setMockData(const AccelGyroData& mockData)
+    void setData(const AccelGyroData& Data)
     {
-        data = mockData;
+        data = Data;
     }
 
-    void setStatus(uint8_t newStatus)
+    void setStatus(SensorStatus newStatus)
     {
         status = newStatus;
     }
@@ -139,3 +142,5 @@ public:
         return useFlightData_;
     }
 };
+
+} // namespace HAL

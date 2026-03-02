@@ -4,13 +4,15 @@
 #include "types.h"
 #include <cstdint>
 
+namespace HAL {
+
 /**
  * @brief Arduino-specific implementation of AccelGyro sensor (LSM6DSOX).
  * 
  * This implementation uses the Adafruit LSM6DSOX library and Arduino I2C/SPI
  * interfaces. For non-Arduino platforms, implement IAccelGyroSensor directly.
  */
-class ArduinoAccelGyroSensor : public IAccelGyroSensor
+class AccelGyroSensor : public IAccelGyroSensor
 {
 private:
     // I2C
@@ -24,23 +26,25 @@ private:
     uint8_t spi_sck;
 
     uint8_t sensor_mode;
-    uint8_t status;
+    SensorStatus status;
     AccelGyroData data;
 
 public:
     /**
      * @brief Construct an AccelGyro sensor for I2C communication.
      */
-    ArduinoAccelGyroSensor(uint8_t i2c_addr, uint8_t i2c_wire);
+    AccelGyroSensor(uint8_t i2c_addr, uint8_t i2c_wire);
 
     /**
      * @brief Construct an AccelGyro sensor for SPI communication.
      */
-    ArduinoAccelGyroSensor(uint8_t cs, uint8_t miso, uint8_t mosi, uint8_t sck);
+    AccelGyroSensor(uint8_t cs, uint8_t miso, uint8_t mosi, uint8_t sck);
 
-    virtual ~ArduinoAccelGyroSensor();
+    virtual ~AccelGyroSensor();
 
-    uint8_t begin() override;
-    uint8_t getStatus() const override;
-    AccelGyroData* read() override;
+    SensorStatus begin() override;
+    SensorStatus getStatus() const override;
+    const AccelGyroData& read() override;
 };
+
+} // namespace HAL

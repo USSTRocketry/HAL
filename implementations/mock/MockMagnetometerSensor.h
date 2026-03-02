@@ -4,49 +4,53 @@
 #include "types.h"
 #include <cstdint>
 
-class MockMagnetometerSensor : public IMagnetometerSensor
+namespace HAL {
+
+class MagnetometerSensor : public IMagnetometerSensor
 {
 private:
     MagnetometerData data;
-    uint8_t status;
+    SensorStatus status;
 
 public:
-    MockMagnetometerSensor(uint8_t /*i2c_addr*/ = 0x1E, uint8_t /*i2c_wire*/ = 0)
-        : status(1), data{0.0f, 0.0f, 0.0f}
+    MagnetometerSensor(uint8_t /*i2c_addr*/ = 0x1E, uint8_t /*i2c_wire*/ = 0)
+        : status(SensorStatus::Success), data{0.0f, 0.0f, 0.0f}
     {
     }
 
-    MockMagnetometerSensor(uint8_t /*cs*/, uint8_t /*miso*/, uint8_t /*mosi*/, uint8_t /*sck*/)
-        : status(1), data{0.0f, 0.0f, 0.0f}
+    MagnetometerSensor(uint8_t /*cs*/, uint8_t /*miso*/, uint8_t /*mosi*/, uint8_t /*sck*/)
+        : status(SensorStatus::Success), data{0.0f, 0.0f, 0.0f}
     {
     }
 
-    virtual ~MockMagnetometerSensor() = default;
+    virtual ~MagnetometerSensor() = default;
 
-    uint8_t begin() override
-    {
-        return status;
-    }
-
-    uint8_t getStatus() const override
+    SensorStatus begin() override
     {
         return status;
     }
 
-    MagnetometerData* read() override
+    SensorStatus getStatus() const override
     {
-        return &data;
+        return status;
     }
 
-    void setMockData(float magX, float magY, float magZ)
+    const MagnetometerData& read() override
+    {
+        return data;
+    }
+
+    void setData(float magX, float magY, float magZ)
     {
         data.magneticX = magX;
         data.magneticY = magY;
         data.magneticZ = magZ;
     }
 
-    void setStatus(uint8_t newStatus)
+    void setStatus(SensorStatus newStatus)
     {
         status = newStatus;
     }
 };
+
+} // namespace HAL

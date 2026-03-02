@@ -1,6 +1,8 @@
 #pragma once
 
-#include <cstdint>
+#include "types.h"
+
+namespace HAL {
 
 /**
  * @brief Abstract base class for all sensor implementations.
@@ -16,13 +18,15 @@ public:
 
     /**
      * @brief Initialize the sensor.
-     * @return Non-zero on success, 0 on failure.
+     * @return SensorStatus::Success on success, SensorStatus::Failure on failure.
      */
-    virtual uint8_t begin() = 0;
+    virtual SensorStatus begin() = 0;
 
     /**
      * @brief Get the initialization status of the sensor.
-     * @return Non-zero if initialized, 0 otherwise.
+     * @return SensorStatus::Success if initialized, SensorStatus::Failure otherwise.
      */
-    virtual uint8_t getStatus() const = 0;
+    virtual SensorStatus getStatus() const = 0;
 };
+
+} // namespace HAL

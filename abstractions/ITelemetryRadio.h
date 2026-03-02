@@ -1,22 +1,25 @@
 #pragma once
 
 #include <cstdint>
+#include <span>
 #include <string>
+
+namespace HAL {
 
 class ITelemetryRadio {
 public:
-    virtual ~ITelemetryRadio() {}
+    virtual ~ITelemetryRadio() = default;
 
     // Initialize the radio with default or customized settings
     virtual bool begin() = 0;
 
-    virtual void reset(uint8_t resetPin = 127) = 0; // Non esistent pin
+    virtual void reset(uint8_t resetPin = 127) = 0; // Non existent pin
 
     // Send data over the radio
-    virtual bool send(const uint8_t* data, size_t length) = 0;
+    virtual bool send(std::span<const uint8_t> data) = 0;
 
     // Receive data from the radio
-    virtual bool receive(uint8_t* buffer, size_t maxLength, size_t& receivedLength) = 0;
+    virtual bool receive(std::span<uint8_t> buffer, size_t& receivedLength) = 0;
 
     // Set a custom frequency
     virtual void setFrequency(float frequency) = 0;
@@ -39,3 +42,5 @@ public:
     // Get the native driver handle
     virtual void* native_handle() = 0;
 };
+
+} // namespace HAL

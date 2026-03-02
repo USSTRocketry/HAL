@@ -11,28 +11,33 @@
 // Static instance of Adafruit_MCP9808
 static Adafruit_MCP9808 mcp9808;
 
-ArduinoTemperatureSensor::ArduinoTemperatureSensor(uint8_t i2c_addr, uint8_t i2c_wire)
-    : i2c_addr(i2c_addr), i2c_wire(i2c_wire), status(0)
+namespace HAL {
+
+TemperatureSensor::TemperatureSensor(uint8_t i2c_addr, uint8_t i2c_wire)
+    : i2c_addr(i2c_addr), i2c_wire(i2c_wire), status(SensorStatus::Failure)
 {
 }
 
-ArduinoTemperatureSensor::~ArduinoTemperatureSensor() {}
+TemperatureSensor::~TemperatureSensor() {}
 
-uint8_t ArduinoTemperatureSensor::begin()
+SensorStatus TemperatureSensor::begin()
 {
     // Initialize the MCP9808 sensor using the selected I2C wire and address
-    status = mcp9808.begin(i2c_addr, &MAP_I2C_WIRE(i2c_wire));
+    bool initSuccess = mcp9808.begin(i2c_addr, &MAP_I2C_WIRE(i2c_wire));
+    status = initSuccess ? SensorStatus::Success : SensorStatus::Failure;
     return status;
 }
 
-uint8_t ArduinoTemperatureSensor::getStatus() const
+SensorStatus TemperatureSensor::getStatus() const
 {
     return status;
 }
 
-TemperatureData* ArduinoTemperatureSensor::read()
+const TemperatureData& TemperatureSensor::read()
 {
     // Read the temperature in Celsius
     data.temperature = mcp9808.readTempC();
-    return &data;
+    return data;
 }
+
+} // namespace HAL

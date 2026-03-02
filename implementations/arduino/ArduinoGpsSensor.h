@@ -4,31 +4,33 @@
 #include "types.h"
 #include <cstdint>
 
+namespace HAL {
+
 /**
  * @brief Arduino-specific implementation of GPS sensor (Adafruit GPS).
  * 
  * This implementation uses the Adafruit GPS library and Arduino HardwareSerial
  * interface. For non-Arduino platforms, implement IGpsSensor directly.
  */
-class ArduinoGpsSensor : public IGpsSensor
+class GpsSensor : public IGpsSensor
 {
 private:
     uint8_t serial_port;
     uint32_t baud_rate;
-    uint8_t status;
+    SensorStatus status;
     GPSData data;
 
 public:
     /**
      * @brief Construct a GPS sensor for serial communication.
      */
-    ArduinoGpsSensor(uint8_t serial_port, uint32_t baud_rate = 9600);
+    GpsSensor(uint8_t serial_port, uint32_t baud_rate = 9600);
 
-    virtual ~ArduinoGpsSensor();
+    virtual ~GpsSensor();
 
-    uint8_t begin() override;
-    uint8_t getStatus() const override;
-    GPSData* read() override;
+    SensorStatus begin() override;
+    SensorStatus getStatus() const override;
+    const GPSData& read() override;
 
     /**
      * @brief Configure GPS settings.
@@ -51,3 +53,5 @@ public:
      */
     void sendCommand(const char* command);
 };
+
+} // namespace HAL
