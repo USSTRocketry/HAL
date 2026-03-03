@@ -63,7 +63,7 @@ void GpsSensor::configure(uint32_t update_rate_ms, const char* output_mode)
 void GpsSensor::update()
 {
     // Update GPS data
-    char c = gps.read();
+    gps.read();
     if (gps.newNMEAreceived()) {
         if (!gps.parse(gps.lastNMEA())) {
             return;  // Skip invalid data
