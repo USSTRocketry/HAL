@@ -34,6 +34,8 @@ public:
         : status(SensorStatus::Success), data{20.5f, 101325.0f, 100.0f}
         , currentIndex_(0), useFlightData_(false), dataFilePath_("data/flight_bmp280.csv")
     {
+        static_cast<void>(i2c_addr);
+        static_cast<void>(i2c_wire);
     }
 
     Bmp280Sensor(uint8_t /*cs*/, uint8_t /*miso*/, uint8_t /*mosi*/, uint8_t /*sck*/, float /*sea_level_hpa*/ = 0.0f)
