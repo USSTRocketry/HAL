@@ -33,43 +33,38 @@
   },
   "dependencies": [
     {
-      "name": "SPI"
-    },
-    {
-      "name": "RadioHead"
+      "name": "RadioHead",
+      "version": "^1.120.0"
     },
     {
       "owner": "arkhipenko",
       "name": "TaskScheduler",
-      "version": "^3.8.5"
+      "version": "^4.0.0"
     },
     {
       "owner": "adafruit",
-      "name": "Adafruit BMP280 Library"
+      "name": "Adafruit BMP280 Library",
+      "version": "^3.0.0"
     },
     {
       "owner": "adafruit",
-      "name": "Adafruit BusIO"
+      "name": "Adafruit GPS Library",
+      "version": "^1.7.0"
     },
     {
       "owner": "adafruit",
-      "name": "Adafruit GPS Library"
+      "name": "Adafruit LIS3MDL",
+      "version": "^1.2.0"
     },
     {
       "owner": "adafruit",
-      "name": "Adafruit LIS3MDL"
+      "name": "Adafruit LSM6DS",
+      "version": "^4.7.0"
     },
     {
       "owner": "adafruit",
-      "name": "Adafruit LSM6DS"
-    },
-    {
-      "owner": "adafruit",
-      "name": "Adafruit MCP9808 Library"
-    },
-    {
-      "owner": "adafruit",
-      "name": "Adafruit Unified Sensor"
+      "name": "Adafruit MCP9808 Library",
+      "version": "^2.0.2"
     }
   ]
 }
