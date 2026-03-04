@@ -1,7 +1,7 @@
 #pragma once
 
 #include "abstractions/IStorage.h"
-#include "implementations/mock/MockFile.h"
+#include "MockFile.h"
 #include <unordered_map>
 #include <memory>
 

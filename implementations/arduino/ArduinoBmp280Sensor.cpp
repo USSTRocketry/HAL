@@ -1,4 +1,4 @@
-#include "implementations/arduino/ArduinoBmp280Sensor.h"
+#include "ArduinoBmp280Sensor.h"
 #include <Wire.h>
 #include <SPI.h>
 #include <Adafruit_BMP280.h>

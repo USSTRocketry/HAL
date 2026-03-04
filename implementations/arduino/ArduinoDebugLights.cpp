@@ -1,4 +1,4 @@
-#include "DebugLights.h"
+#include "ArduinoDebugLights.h"
 #include <PINS.h>
 #include <Arduino.h>
 

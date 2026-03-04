@@ -1,4 +1,4 @@
-#include "implementations/arduino/ArduinoAccelGyroSensor.h"
+#include "ArduinoAccelGyroSensor.h"
 #include <Adafruit_LSM6DSOX.h>
 
 // Macro definitions from Sensor.h

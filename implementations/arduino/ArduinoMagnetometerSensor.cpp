@@ -1,4 +1,4 @@
-#include "implementations/arduino/ArduinoMagnetometerSensor.h"
+#include "ArduinoMagnetometerSensor.h"
 #include <Adafruit_LIS3MDL.h>
 
 // Macro definitions from Sensor.h

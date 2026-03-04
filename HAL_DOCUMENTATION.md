@@ -33,10 +33,14 @@ HAL::RFM95Radio radio(10, 11, HW_SPI1);
   - `USST_PLATFORM_STM32` (template)
   - `USST_PLATFORM_MOCK`
 
+- Workqueue type
+  - `WORK_QUEUE_PREEMPTIVE=BOOL`
+
 PlatformIO `platformio.ini`:
 ```ini
 build_flags =
   -DUSST_PLATFORM_ARDUINO
+  -DWORK_QUEUE_PREEMPTIVE=FALSE
 ```
 
 CMake (project-level):

@@ -1,4 +1,4 @@
-#include "implementations/arduino/ArduinoTemperatureSensor.h"
+#include "ArduinoTemperatureSensor.h"
 #include <Adafruit_MCP9808.h>
 
 // Macro definitions from Sensor.h

@@ -1,4 +1,4 @@
-#include "implementations/arduino/ArduinoRFM95Radio.h"
+#include "ArduinoRFM95Radio.h"
 #include <RH_RF95.h>
 #include <RHHardwareSPI1.h>
 #include <RHHardwareSPI2.h>

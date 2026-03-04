@@ -19,7 +19,7 @@
     "rocketry"
   ],
   "build": {
-    "srcDir": ".",
+    "srcDir": "implementations/arduino",
     "includeDir": ".",
     "flags": [
       "-std=gnu++20",

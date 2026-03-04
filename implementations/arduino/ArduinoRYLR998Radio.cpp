@@ -1,4 +1,4 @@
-#include "implementations/arduino/ArduinoRYLR998Radio.h"
+#include "ArduinoRYLR998Radio.h"
 #include <HardwareSerial.h>
 
 // Macro for HardwareSerial mapping

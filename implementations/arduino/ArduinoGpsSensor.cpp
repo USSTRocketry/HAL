@@ -1,4 +1,4 @@
-#include "implementations/arduino/ArduinoGpsSensor.h"
+#include "ArduinoGpsSensor.h"
 #include <Adafruit_GPS.h>
 #include <HardwareSerial.h>
 

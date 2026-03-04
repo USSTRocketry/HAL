@@ -1,6 +1,6 @@
 #pragma once
 
-#include "abstractions/ISensor.h"
+#include "ISensor.h"
 #include "types.h"
 
 namespace HAL {
