@@ -80,7 +80,7 @@ WorkQueue::Status WorkQueue::Deinit() { return Status::Success; }
 // Submit a task
 std::pair<Wq::Status, Wh> Wq::Submit(const SubmitOptions& Options)
 {
-    if (!Options.Exec.Fn || Options.Sched.Iterations == 0) return {Status::InvalidParam, Wh {nullptr}};
+    if (!Options.Exec.Fn || Options.Sched.Iterations == 0) return {Status::InvalidParam, {}};
 
     // TaskScheduler uses TASK_FOREVER (-1) for infinite.
     // Map our InfiniteIterations to TASK_FOREVER.
@@ -118,7 +118,7 @@ std::pair<Wq::Status, Wh> Wq::Submit(const SubmitOptions& Options)
                            // self destruct also frees the memory
                            true);
 
-    if (pTask == nullptr) { return {Status::Fail, Wh {nullptr}}; }
+    if (pTask == nullptr) { return {Status::Fail, {}}; }
 
     // WARN : If allocation for shared_ptr or std::function fails then we crash and burn,
     // consider fix
@@ -140,13 +140,18 @@ std::pair<Wq::Status, Wh> Wq::Submit(const SubmitOptions& Options)
 
 Wq::Status Wq::Cancel(const Wh& Handle)
 {
-    // This performs a best effort canceling,
-    // Tasks already in progress might not be canceled
-    auto T = Handle.m_Impl.lock();
-    if (T && T->Work) { T->Work->disable(); }
+    Handle.Cancel();
 
     // don't really care if the task was enabled or not before this
     return Status::Success;
+}
+
+void Wh::Cancel() const
+{
+    // This performs a best effort canceling,
+    // Tasks already in progress might not be canceled
+    auto Handle = m_Impl.lock();
+    if (Handle && Handle->Work) { Handle->Work->disable(); }
 }
 
 // Execute all scheduled tasks (non-preemptive)

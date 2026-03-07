@@ -87,8 +87,10 @@ class WorkQueue::WorkHandle
 public:
     void* GetContext() const;
     bool IsAlive() const;
+    void Cancel() const;
 
 public:
+    WorkHandle() = default;
     WorkHandle(const WorkHandle&)            = default;
     WorkHandle& operator=(const WorkHandle&) = default;
     WorkHandle(WorkHandle&&)                 = default;

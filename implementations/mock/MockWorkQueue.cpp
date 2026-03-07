@@ -331,7 +331,7 @@ std::pair<WorkQueue::Status, WorkQueue::WorkHandle> WorkQueue::Submit(const Subm
 {
     if (!Options.Exec.Fn || Options.Sched.Iterations == 0)
     {
-        return {Status::InvalidParam, WorkHandle(nullptr)};
+        return {Status::InvalidParam, {}};
     }
 
     try
@@ -349,20 +349,14 @@ std::pair<WorkQueue::Status, WorkQueue::WorkHandle> WorkQueue::Submit(const Subm
     }
     catch (...)
     {
-        return {Status::Fail, WorkHandle(nullptr)};
+        return {Status::Fail, {}};
     }
 }
 
 WorkQueue::Status WorkQueue::Cancel(const WorkHandle& Handle)
 {
-    if (const auto HandleImpl = Handle.m_Impl.lock())
-    {
-        if (const auto Task = HandleImpl->Task.lock())
-        {
-            Task->CancelRequested.store(true, std::memory_order_release);
-            m_Impl->NotifyScheduler();
-        }
-    }
+    Handle.Cancel();
+    m_Impl->NotifyScheduler();
 
     return Status::Success;
 }
@@ -378,6 +372,17 @@ WorkQueue::Status WorkQueue::Run()
 WorkQueue::WorkHandle::WorkHandle(const std::shared_ptr<Impl>& HandleImpl) : m_Impl(HandleImpl) {}
 
 WorkQueue::WorkHandle::~WorkHandle() = default;
+
+void WorkQueue::WorkHandle::Cancel() const
+{
+    if (const auto HandleImpl = m_Impl.lock())
+    {
+        if (const auto Task = HandleImpl->Task.lock())
+        {
+            Task->CancelRequested.store(true, std::memory_order_release);
+        }
+    }
+}
 
 void* WorkQueue::WorkHandle::GetContext() const
 {

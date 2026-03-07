@@ -71,6 +71,12 @@ void OrderTask(WorkQueue::WorkHandle& Handle)
         RecordOrder(*Id);
     }
 }
+
+void ExpectInvalidHandle(const WorkQueue::WorkHandle& Handle)
+{
+    EXPECT_FALSE(Handle.IsAlive());
+    EXPECT_EQ(Handle.GetContext(), nullptr);
+}
 } // namespace
 
 // ============================================================================
@@ -90,8 +96,7 @@ TEST(MockWorkQueueApi, SubmitRejectsNullFunction)
 
     auto [Status, Handle] = Queue.Submit(Options);
     EXPECT_EQ(Status, WorkQueue::Status::InvalidParam);
-    EXPECT_FALSE(Handle.IsAlive());
-    EXPECT_EQ(Handle.GetContext(), nullptr);
+    ExpectInvalidHandle(Handle);
 }
 
 TEST(MockWorkQueueApi, SubmitRejectsZeroIterations)
@@ -105,7 +110,7 @@ TEST(MockWorkQueueApi, SubmitRejectsZeroIterations)
 
     auto [Status, Handle] = Queue.Submit(Options);
     EXPECT_EQ(Status, WorkQueue::Status::InvalidParam);
-    EXPECT_FALSE(Handle.IsAlive());
+    ExpectInvalidHandle(Handle);
 }
 
 TEST(MockWorkQueueApi, CancelOnInvalidHandleSucceeds)
@@ -113,13 +118,19 @@ TEST(MockWorkQueueApi, CancelOnInvalidHandleSucceeds)
     WorkQueue Queue;
     ASSERT_EQ(Queue.Init(), WorkQueue::Status::Success);
 
-    WorkQueue::SubmitOptions InvalidOptions;
-    InvalidOptions.Exec.Fn = nullptr;
-    InvalidOptions.Sched.Iterations = 1;
+    WorkQueue::WorkHandle InvalidHandle;
+    ExpectInvalidHandle(InvalidHandle);
+    EXPECT_EQ(Queue.Cancel(InvalidHandle), WorkQueue::Status::Success);
+}
 
-    auto [Status, InvalidHandle] = Queue.Submit(InvalidOptions);
-    ASSERT_EQ(Status, WorkQueue::Status::InvalidParam);
-    EXPECT_FALSE(InvalidHandle.IsAlive());
+TEST(MockWorkQueueApi, UserCanCreateInvalidHandle)
+{
+    WorkQueue::WorkHandle InvalidHandle;
+
+    ExpectInvalidHandle(InvalidHandle);
+
+    WorkQueue Queue;
+    ASSERT_EQ(Queue.Init(), WorkQueue::Status::Success);
     EXPECT_EQ(Queue.Cancel(InvalidHandle), WorkQueue::Status::Success);
 }
 
@@ -265,8 +276,7 @@ TEST(MockWorkQueueApi, DeinitClearsTasksAndInvalidatesHandle)
     EXPECT_TRUE(Handle.IsAlive());
 
     EXPECT_EQ(Queue.Deinit(), WorkQueue::Status::Success);
-    EXPECT_FALSE(Handle.IsAlive());
-    EXPECT_EQ(Handle.GetContext(), nullptr);
+    ExpectInvalidHandle(Handle);
 }
 
 TEST(MockWorkQueueApi, InitAndDeinitAreRepeatable)
@@ -297,7 +307,7 @@ TEST(PreemptiveWorkQueueApi, SubmitRejectsNullFunction)
 
     auto [Status, Handle] = Queue.Submit(Options);
     EXPECT_EQ(Status, WorkQueue::Status::InvalidParam);
-    EXPECT_FALSE(Handle.IsAlive());
+    ExpectInvalidHandle(Handle);
     EXPECT_EQ(Queue.Deinit(), WorkQueue::Status::Success);
 }
 
@@ -312,7 +322,7 @@ TEST(PreemptiveWorkQueueApi, SubmitRejectsZeroIterations)
 
     auto [Status, Handle] = Queue.Submit(Options);
     EXPECT_EQ(Status, WorkQueue::Status::InvalidParam);
-    EXPECT_FALSE(Handle.IsAlive());
+    ExpectInvalidHandle(Handle);
     EXPECT_EQ(Queue.Deinit(), WorkQueue::Status::Success);
 }
 
@@ -321,13 +331,20 @@ TEST(PreemptiveWorkQueueApi, CancelOnInvalidHandleSucceeds)
     WorkQueue Queue;
     ASSERT_EQ(Queue.Init(), WorkQueue::Status::Success);
 
-    WorkQueue::SubmitOptions InvalidOptions;
-    InvalidOptions.Exec.Fn = nullptr;
-    InvalidOptions.Sched.Iterations = 1;
+    WorkQueue::WorkHandle InvalidHandle;
+    ExpectInvalidHandle(InvalidHandle);
+    EXPECT_EQ(Queue.Cancel(InvalidHandle), WorkQueue::Status::Success);
+    EXPECT_EQ(Queue.Deinit(), WorkQueue::Status::Success);
+}
 
-    auto [Status, InvalidHandle] = Queue.Submit(InvalidOptions);
-    ASSERT_EQ(Status, WorkQueue::Status::InvalidParam);
-    EXPECT_FALSE(InvalidHandle.IsAlive());
+TEST(PreemptiveWorkQueueApi, UserCanCreateInvalidHandle)
+{
+    WorkQueue::WorkHandle InvalidHandle;
+
+    ExpectInvalidHandle(InvalidHandle);
+
+    WorkQueue Queue;
+    ASSERT_EQ(Queue.Init(), WorkQueue::Status::Success);
     EXPECT_EQ(Queue.Cancel(InvalidHandle), WorkQueue::Status::Success);
     EXPECT_EQ(Queue.Deinit(), WorkQueue::Status::Success);
 }
@@ -479,8 +496,7 @@ TEST(PreemptiveWorkQueueApi, DeinitClearsTasksAndInvalidatesHandle)
     ASSERT_TRUE(Handle.IsAlive());
 
     EXPECT_EQ(Queue.Deinit(), WorkQueue::Status::Success);
-    EXPECT_FALSE(Handle.IsAlive());
-    EXPECT_EQ(Handle.GetContext(), nullptr);
+    ExpectInvalidHandle(Handle);
 }
 
 TEST(PreemptiveWorkQueueApi, InitAndDeinitAreRepeatable)
